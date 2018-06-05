@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.SysUserDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.SysUserDO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="realname" jdbcType="VARCHAR" property="realname"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="sex" jdbcType="BIT" property="sex"/>
+        <result column="age" jdbcType="SMALLINT" property="age"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="status" jdbcType="SMALLINT" property="status"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+    </resultMap>
+
+    <sql id="fromSql">
+    id, username, nickname, realname, password, sex, age, address, phone, status,
+    gmt_create, gmt_update
+    from t_sys_user t
+  </sql>
+    <sql id="fromTable">
+    from t_sys_user t
+  </sql>
+    <sql id="whereSql">
+        <where>
+            <if test="id != null">
+                AND t.id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="username != null and username != ''">
+                AND t.username = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                AND t.nickname = #{nickname,jdbcType=VARCHAR}
+            </if>
+            <if test="realname != null and realname != ''">
+                AND t.realname = #{realname,jdbcType=VARCHAR}
+            </if>
+            <if test="password != null and password != ''">
+                AND t.password = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="sex != null">
+                AND t.sex = #{sex,jdbcType=BIT}
+            </if>
+            <if test="age != null">
+                AND t.age = #{age,jdbcType=SMALLINT}
+            </if>
+            <if test="address != null and address != ''">
+                AND t.address = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND t.phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND t.status = #{status,jdbcType=SMALLINT}
+            </if>
+            <if test="gmtCreate != null">
+                AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="gmtUpdate != null">
+                AND t.gmt_update = #{gmtUpdate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        <if test="offset != null">
+            OFFSET #{offset,jdbcType=INTEGER}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit,jdbcType=INTEGER}
+        </if>
+    </sql>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_sys_user
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
+            SELECT nextval('t_sys_user_id_seq'::regclass)
+        </selectKey>
+        insert into t_sys_user (id, username, nickname,
+        realname, password, sex,
+        age, address, phone,
+        status, gmt_create, gmt_update
+        )
+        values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
+        #{realname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{sex,jdbcType=BIT},
+        #{age,jdbcType=SMALLINT}, #{address,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+        #{status,jdbcType=SMALLINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtUpdate,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
+    update t_sys_user
+    set username = #{username,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      realname = #{realname,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=BIT},
+      age = #{age,jdbcType=SMALLINT},
+      address = #{address,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_update = #{gmtUpdate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+    </select>
+
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.domain.SysUserDO" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        <include refid="whereSql"/>
+    </select>
+
+    <select id="count" resultType="Long">
+        select count(*)
+        <include refid="fromTable"/>
+    </select>
+
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.domain.SysUserDO" resultType="Long">
+        select count(*)
+        <include refid="fromTable"/>
+        <include refid="whereSql"/>
+    </select>
+</mapper>
