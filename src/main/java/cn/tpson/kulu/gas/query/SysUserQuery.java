@@ -1,6 +1,6 @@
-package cn.tpson.kulu.gas.dto;
+package cn.tpson.kulu.gas.query;
 
-public class SysUserDTO extends BaseDTO {
+public class SysUserQuery extends BaseQuery {
     private String username;
 
     private String nickname;

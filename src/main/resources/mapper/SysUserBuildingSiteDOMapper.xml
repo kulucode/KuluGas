@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.SysUserBuildingSiteDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.SysUserBuildingSiteDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="proj_name" jdbcType="VARCHAR" property="projName"/>
+        <result column="pm" jdbcType="VARCHAR" property="pm"/>
+        <result column="proj_addr" jdbcType="VARCHAR" property="projAddr"/>
+        <result column="contact_person" jdbcType="VARCHAR" property="contactPerson"/>
+        <result column="phone_no" jdbcType="VARCHAR" property="phoneNo"/>
+        <result column="licence_no" jdbcType="VARCHAR" property="licenceNo"/>
+        <result column="licence_pic" jdbcType="VARCHAR" property="licencePic"/>
+        <result column="busi_licence_pic" jdbcType="VARCHAR" property="busiLicencePic"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="BIT" property="isDeleted"/>
+    </resultMap>
+
+    <sql id="fromSql">
+        t.id, t.uid, t.name, t.proj_name, t.pm, t.proj_addr, t.contact_person, t.phone_no, t.licence_no, t.licence_pic, t.busi_licence_pic, t.gmt_create, t.gmt_modified, t.is_deleted
+        from t_sys_user_building_site t
+    </sql>
+    <sql id="fromTable">
+        from t_sys_user_building_site t
+    </sql>
+    <sql id="whereSql">
+        <where>
+            <if test="id != null">
+                AND t.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="pid != null">
+                AND t.uid = #{uid,jdbcType=INTEGER}
+            </if>
+            <if test="name != null and name != ''">
+                AND t.name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="projName != null and projName != ''">
+                AND t.proj_name = #{projName,jdbcType=VARCHAR}
+            </if>
+            <if test="pm != null and pm != ''">
+                AND t.pm = #{pm,jdbcType=VARCHAR}
+            </if>
+            <if test="projAddr != null and projAddr != ''">
+                AND t.proj_addr = #{projAddr,jdbcType=VARCHAR}
+            </if>
+            <if test="contactPerson != null and contactPerson != ''">
+                AND t.contact_person = #{contactPerson,jdbcType=VARCHAR}
+            </if>
+            <if test="phoneNo != null and phoneNo != ''">
+                AND t.phone_no = #{phoneNo,jdbcType=VARCHAR}
+            </if>
+            <if test="licenceNo != null and licenceNo != ''">
+                AND t.licence_no = #{licenceNo,jdbcType=VARCHAR}
+            </if>
+            <if test="licencePic != null and licencePic != ''">
+                AND t.licence_pic = #{licencePic,jdbcType=VARCHAR}
+            </if>
+            <if test="busiLicencePic != null and busiLicencePic != ''">
+                AND t.busi_licence_pic = #{busiLicencePic,jdbcType=VARCHAR}
+            </if>
+            <if test="gmtCreate != null">
+                AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="gmtModified != null">
+                AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+            </if>
+            <if test="deleted != null">
+                AND t.is_deleted = #{deleted,jdbcType=BOOLEAN}
+            </if>
+        </where>
+        <if test="offset != null">
+            OFFSET #{offset,jdbcType=INTEGER}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit,jdbcType=INTEGER}
+        </if>
+    </sql>
+    <!--***************************************************************************************-->
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_user_building_site set is_deleted = false
+        where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserBuildingSiteDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_sys_user_building_site_id_seq'::regclass)
+        </selectKey>
+        insert into t_sys_user_building_site (id, uid, name,
+        proj_name, pm, proj_addr,
+        contact_person, phone_no, licence_no,
+        licence_pic, busi_licence_pic, gmt_create,
+        gmt_modified, is_deleted)
+        values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+        #{projName,jdbcType=VARCHAR}, #{pm,jdbcType=VARCHAR}, #{projAddr,jdbcType=VARCHAR},
+        #{contactPerson,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR}, #{licenceNo,jdbcType=VARCHAR},
+        #{licencePic,jdbcType=VARCHAR}, #{busiLicencePic,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP},
+        #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserBuildingSiteDO">
+    update t_sys_user_building_site
+    set uid = #{uid,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      proj_name = #{projName,jdbcType=VARCHAR},
+      pm = #{pm,jdbcType=VARCHAR},
+      proj_addr = #{projAddr,jdbcType=VARCHAR},
+      contact_person = #{contactPerson,jdbcType=VARCHAR},
+      phone_no = #{phoneNo,jdbcType=VARCHAR},
+      licence_no = #{licenceNo,jdbcType=VARCHAR},
+      licence_pic = #{licencePic,jdbcType=VARCHAR},
+      busi_licence_pic = #{busiLicencePic,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where t.id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+    </select>
+
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.SysUserBuildingSiteQuery"
+            resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        <include refid="whereSql"/>
+    </select>
+
+    <select id="count" resultType="Long">
+        select count(*)
+        <include refid="fromTable"/>
+    </select>
+
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.SysUserBuildingSiteQuery" resultType="Long">
+        select count(*)
+        <include refid="fromTable"/>
+        <include refid="whereSql"/>
+    </select>
+</mapper>

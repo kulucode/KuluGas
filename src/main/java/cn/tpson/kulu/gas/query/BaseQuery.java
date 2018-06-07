@@ -1,19 +1,15 @@
-package cn.tpson.kulu.gas.dto;
+package cn.tpson.kulu.gas.query;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by Zhangka in 2018/06/05
+ * Created by Zhangka in 2018/06/07
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class BaseDTO implements Serializable {
-    @JsonIgnore
+public class BaseQuery implements Serializable {
     private Integer offset;
-    @JsonIgnore
     private Integer limit;
 
     private Integer id;

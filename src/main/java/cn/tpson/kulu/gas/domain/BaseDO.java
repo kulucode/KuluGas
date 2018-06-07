@@ -1,41 +1,16 @@
-package cn.tpson.kulu.gas.dto;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
+package cn.tpson.kulu.gas.domain;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by Zhangka in 2018/06/05
+ * Created by Zhangka in 2018/06/06
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class BaseDTO implements Serializable {
-    @JsonIgnore
-    private Integer offset;
-    @JsonIgnore
-    private Integer limit;
-
+public class BaseDO implements Serializable {
     private Integer id;
     private Boolean deleted;
     private Date gmtCreate;
     private Date gmtModified;
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
 
     public Integer getId() {
         return id;

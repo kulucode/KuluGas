@@ -1,6 +1,6 @@
-package cn.tpson.kulu.gas.dto;
+package cn.tpson.kulu.gas.query;
 
-public class SysRoleDTO extends BaseDTO {
+public class SysRoleQuery extends BaseQuery {
     private String roleName;
 
     public String getRoleName() {

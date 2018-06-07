@@ -2,6 +2,7 @@ package cn.tpson.kulu.gas.service.impl;
 
 import cn.tpson.kulu.gas.domain.SysUserDO;
 import cn.tpson.kulu.gas.dto.SysUserDTO;
+import cn.tpson.kulu.gas.query.SysUserQuery;
 import cn.tpson.kulu.gas.repository.BaseMapper;
 import cn.tpson.kulu.gas.repository.SysUserDOMapper;
 import cn.tpson.kulu.gas.service.SysUserService;
@@ -14,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class SysUserServiceImpl extends BaseServiceImpl<SysUserDTO, SysUserDO> implements SysUserService {
+public class SysUserServiceImpl extends BaseServiceImpl<SysUserDTO, SysUserDO, SysUserQuery> implements SysUserService {
     @Autowired
     private SysUserDOMapper sysUserDOMapper;
 
     @Override
-    public BaseMapper<SysUserDTO, SysUserDO> mapper() {
+    public BaseMapper<SysUserQuery, SysUserDO> mapper() {
         return sysUserDOMapper;
     }
 }

@@ -6,7 +6,6 @@ import cn.tpson.kulu.gas.service.BaseService;
 import cn.tpson.kulu.gas.util.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,19 +14,19 @@ import java.util.List;
 /**
  * Created by Zhangka in 2018/06/05
  */
-public abstract class BaseServiceImpl<DTO extends BaseDTO, DO> implements BaseService<DTO, DO> {
+public abstract class BaseServiceImpl<DTO, DO, QUERY> implements BaseService<DTO, DO, QUERY> {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public long insert(DTO record) {
+    public int insert(DTO record) {
         Class<DO> clazz = getGenericClassForDo();
         DO d = BeanUtils.copyProperties(clazz, record);
         mapper().insert(d);
         Method method;
-        Long id;
+        int id;
         try {
             method = clazz.getMethod("getId");
-            id = (Long) method.invoke(d);
+            id = (Integer) method.invoke(d);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -60,29 +59,31 @@ public abstract class BaseServiceImpl<DTO extends BaseDTO, DO> implements BaseSe
     }
 
     @Override
-    public List<DTO> listByExample(DTO example) {
+    public List<DTO> listByExample(QUERY example) {
         List<DO> list = mapper().selectByExample(example);
         return BeanUtils.copyPropertiesForList(getGenericClassForDto(), list);
     }
 
     @Override
-    public long count() {
+    public int count() {
         return mapper().count();
     }
 
     @Override
-    public long countByExample(DTO example) {
+    public int countByExample(QUERY example) {
         return mapper().countByExample(example);
     }
 
     @Override
-    public Page<DTO> pageByExample(Page<DTO> page) {
-        DTO example = page.getCondition();
-        example.setOffset(page.getFirstIndex());
-        example.setLimit(page.getLastIndex());
+    public Page<DTO> pageByExample(QUERY example) {
+        Page<DTO> page = new Page<>();
+        int totalCount = countByExample(example);
+        if (totalCount == 0) {
+            page.setTotalCount(totalCount);
+            return page;
+        }
 
         List<DTO> resultList = listByExample(example);
-        long totalCount = countByExample(example);
         page.setResultList(resultList);
         page.setTotalCount(totalCount);
         return page;

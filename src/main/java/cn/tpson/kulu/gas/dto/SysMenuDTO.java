@@ -1,29 +1,26 @@
 package cn.tpson.kulu.gas.dto;
 
-import java.util.Date;
+import java.util.List;
 
 public class SysMenuDTO extends BaseDTO {
-    private Long id;
-
     private Long pid;
 
-    private String name;
+    private String text;
 
-    private String aliasName;
+    private String aliasText;
 
     private String uri;
 
-    private Date gmtCreate;
+    private Short type;
 
-    private Date gmtUpdate;
+    private Short order;
 
-    public Long getId() {
-        return id;
-    }
+    private String icon;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    //////////////////////////////////////////////////////////////////////////////
+    private Boolean checked;// 标记前端页面是否被选中
+
+    private List<SysMenuDTO> children;
 
     public Long getPid() {
         return pid;
@@ -33,20 +30,20 @@ public class SysMenuDTO extends BaseDTO {
         this.pid = pid;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getAliasName() {
-        return aliasName;
+    public String getAliasText() {
+        return aliasText;
     }
 
-    public void setAliasName(String aliasName) {
-        this.aliasName = aliasName;
+    public void setAliasText(String aliasText) {
+        this.aliasText = aliasText;
     }
 
     public String getUri() {
@@ -57,19 +54,43 @@ public class SysMenuDTO extends BaseDTO {
         this.uri = uri;
     }
 
-    public Date getGmtCreate() {
-        return gmtCreate;
+    public Short getType() {
+        return type;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
-        this.gmtCreate = gmtCreate;
+    public void setType(Short type) {
+        this.type = type;
     }
 
-    public Date getGmtUpdate() {
-        return gmtUpdate;
+    public Short getOrder() {
+        return order;
     }
 
-    public void setGmtUpdate(Date gmtUpdate) {
-        this.gmtUpdate = gmtUpdate;
+    public void setOrder(Short order) {
+        this.order = order;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public List<SysMenuDTO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<SysMenuDTO> children) {
+        this.children = children;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 }

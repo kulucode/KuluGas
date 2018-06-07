@@ -1,6 +1,8 @@
-package cn.tpson.kulu.gas.domain;
+package cn.tpson.kulu.gas.query;
 
-public class SysMenuDO extends BaseDO {
+import java.util.List;
+
+public class SysMenuQuery extends BaseQuery {
     private Long pid;
 
     private String text;

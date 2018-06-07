@@ -2,23 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.tpson.kulu.gas.repository.SysUserDOMapper">
     <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.SysUserDO">
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="username" jdbcType="VARCHAR" property="username"/>
         <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
         <result column="realname" jdbcType="VARCHAR" property="realname"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
-        <result column="sex" jdbcType="BIT" property="sex"/>
-        <result column="age" jdbcType="SMALLINT" property="age"/>
-        <result column="address" jdbcType="VARCHAR" property="address"/>
-        <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="status" jdbcType="SMALLINT" property="status"/>
+        <result column="type" jdbcType="SMALLINT" property="type"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
-        <result column="gmt_update" jdbcType="TIMESTAMP" property="gmtUpdate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="BOOLEAN" property="deleted"/>
     </resultMap>
 
     <sql id="fromSql">
-    id, username, nickname, realname, password, sex, age, address, phone, status,
-    gmt_create, gmt_update
+    t.id, t.username, t.nickname, t.realname, t.password, t.status, t.type, t.gmt_create, t.gmt_modified, t.is_deleted
     from t_sys_user t
   </sql>
     <sql id="fromTable">
@@ -27,7 +24,7 @@
     <sql id="whereSql">
         <where>
             <if test="id != null">
-                AND t.id = #{id,jdbcType=BIGINT}
+                AND t.id = #{id,jdbcType=INTEGER}
             </if>
             <if test="username != null and username != ''">
                 AND t.username = #{username,jdbcType=VARCHAR}
@@ -41,26 +38,20 @@
             <if test="password != null and password != ''">
                 AND t.password = #{password,jdbcType=VARCHAR}
             </if>
-            <if test="sex != null">
-                AND t.sex = #{sex,jdbcType=BIT}
-            </if>
-            <if test="age != null">
-                AND t.age = #{age,jdbcType=SMALLINT}
-            </if>
-            <if test="address != null and address != ''">
-                AND t.address = #{address,jdbcType=VARCHAR}
-            </if>
-            <if test="phone != null and phone != ''">
-                AND t.phone = #{phone,jdbcType=VARCHAR}
-            </if>
             <if test="status != null">
                 AND t.status = #{status,jdbcType=SMALLINT}
+            </if>
+            <if test="type != null">
+                AND t.type = #{type,jdbcType=SMALLINT}
             </if>
             <if test="gmtCreate != null">
                 AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
             </if>
-            <if test="gmtUpdate != null">
-                AND t.gmt_update = #{gmtUpdate,jdbcType=TIMESTAMP}
+            <if test="gmtModified != null">
+                AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+            </if>
+            <if test="deleted != null">
+                AND t.is_deleted = #{deleted,jdbcType=BOOLEAN}
             </if>
         </where>
         <if test="offset != null">
@@ -71,23 +62,20 @@
         </if>
     </sql>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from t_sys_user
-        where id = #{id,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_user set is_deleted = false
+        where id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
-        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Long">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_sys_user_id_seq'::regclass)
         </selectKey>
-        insert into t_sys_user (id, username, nickname,
-        realname, password, sex,
-        age, address, phone,
-        status, gmt_create, gmt_update
-        )
-        values (#{id,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
-        #{realname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{sex,jdbcType=BIT},
-        #{age,jdbcType=SMALLINT}, #{address,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
-        #{status,jdbcType=SMALLINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtUpdate,jdbcType=TIMESTAMP}
+        insert into t_sys_user (id, username, nickname, realname, password, status, type, gmt_create, gmt_modified,
+        is_deleted)
+        values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
+        #{realname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT},
+        #{type,jdbcType=SMALLINT}, #{gmtCreate,jdbcType=TIMESTAMP},
+        #{gmtModified,jdbcType=TIMESTAMP}, #{deleted, jdbcType=BOOLEAN}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
@@ -96,20 +84,18 @@
       nickname = #{nickname,jdbcType=VARCHAR},
       realname = #{realname,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=BIT},
-      age = #{age,jdbcType=SMALLINT},
-      address = #{address,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
       status = #{status,jdbcType=SMALLINT},
+      type = #{type,jdbcType=SMALLINT},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_update = #{gmtUpdate,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{deleted, jdbcType=BOOLEAN}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
-        where id = #{id,jdbcType=BIGINT}
+        where t.id = #{id,jdbcType=INTEGER}
     </select>
 
     <select id="selectAll" resultMap="BaseResultMap">
@@ -117,18 +103,18 @@
         <include refid="fromSql"/>
     </select>
 
-    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.domain.SysUserDO" resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.SysUserQuery" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
         <include refid="whereSql"/>
     </select>
 
-    <select id="count" resultType="Long">
+    <select id="count" resultType="Integer">
         select count(*)
         <include refid="fromTable"/>
     </select>
 
-    <select id="countByExample" parameterType="cn.tpson.kulu.gas.domain.SysUserDO" resultType="Long">
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.SysUserQuery" resultType="Integer">
         select count(*)
         <include refid="fromTable"/>
         <include refid="whereSql"/>

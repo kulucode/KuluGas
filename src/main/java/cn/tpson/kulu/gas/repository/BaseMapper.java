@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by Zhangka in 2018/06/04
  */
-public interface BaseMapper<DTO, DO> {
+public interface BaseMapper<QUERY, DO> {
     int insert(DO record);
 
     int deleteByPrimaryKey(Long id);
@@ -16,9 +16,9 @@ public interface BaseMapper<DTO, DO> {
 
     List<DO> selectAll();
 
-    List<DO> selectByExample(DTO example);
+    List<DO> selectByExample(QUERY example);
 
-    long count();
+    int count();
 
-    long countByExample(DTO example);
+    int countByExample(QUERY example);
 }

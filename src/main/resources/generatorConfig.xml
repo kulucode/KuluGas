@@ -41,16 +41,14 @@
 
         <!-- 要生成的表 -->
         <!-- 这里的百分号代表对该数据库中所有的表进行生成 -->
-        <table tableName="t_sys_user" domainObjectName="SysUserDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_user_id_seq'::regclass)" type="pre"/>
+        <table tableName="t_sys_user_building_site" domainObjectName="SysUserBuildingSiteDO">
+            <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_user_building_site_id_seq'::regclass)" type="pre"/>
         </table>
 
-        <table tableName="t_sys_role" domainObjectName="SysRoleDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_role_id_seq'::regclass)" type="pre"/>
+        <table tableName="t_sys_user_personal" domainObjectName="SysUserPersonalDO">
+            <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_user_personal_id_seq'::regclass)" type="pre"/>
         </table>
 
-        <table tableName="t_sys_menu" domainObjectName="SysMenuDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_menu_id_seq'::regclass)" type="pre"/>
-        </table>
+
     </context>
 </generatorConfiguration>

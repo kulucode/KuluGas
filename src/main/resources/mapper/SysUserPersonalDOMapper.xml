@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.SysUserPersonalDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="id_card" jdbcType="VARCHAR" property="idCard"/>
+        <result column="phone_no" jdbcType="VARCHAR" property="phoneNo"/>
+        <result column="id_card_front_pic" jdbcType="VARCHAR" property="idCardFrontPic"/>
+        <result column="id_card_back_pic" jdbcType="VARCHAR" property="idCardBackPic"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="BIT" property="isDeleted"/>
+    </resultMap>
+
+    <sql id="fromSql">
+        t.id, t.uid, t.id_card, t.phone_no, t.id_card_front_pic, t.id_card_back_pic, t.gmt_create, t.gmt_modified, t.is_deleted
+        from t_sys_user_personal t
+    </sql>
+    <sql id="fromTable">
+        from t_sys_user_personal t
+    </sql>
+    <sql id="whereSql">
+        <where>
+            <if test="id != null">
+                AND t.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="pid != null">
+                AND t.uid = #{uid,jdbcType=INTEGER}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                AND t.id_card = #{idCard,jdbcType=VARCHAR}
+            </if>
+            <if test="phoneNo != null and phoneNo != ''">
+                AND t.phone_no = #{phoneNo,jdbcType=VARCHAR}
+            </if>
+            <if test="idCardFrontPic != null and idCardFrontPic != ''">
+                AND t.id_card_front_pic = #{idCardFrontPic,jdbcType=VARCHAR}
+            </if>
+            <if test="idCardBackPic != null and idCardBackPic != ''">
+                AND t.id_card_back_pic = #{idCardBackPic,jdbcType=VARCHAR}
+            </if>
+            <if test="gmtCreate != null">
+                AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="gmtModified != null">
+                AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+            </if>
+            <if test="deleted != null">
+                AND t.is_deleted = #{deleted,jdbcType=BOOLEAN}
+            </if>
+        </where>
+        <if test="offset != null">
+            OFFSET #{offset,jdbcType=INTEGER}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit,jdbcType=INTEGER}
+        </if>
+    </sql>
+    <!--***************************************************************************************-->
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_user_personal set is_deleted = false where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_sys_user_personal_id_seq'::regclass)
+        </selectKey>
+        insert into t_sys_user_personal (id, uid, id_card,
+        phone_no, id_card_front_pic, id_card_back_pic,
+        gmt_create, gmt_modified, is_deleted
+        )
+        values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{idCard,jdbcType=VARCHAR},
+        #{phoneNo,jdbcType=VARCHAR}, #{idCardFrontPic,jdbcType=VARCHAR}, #{idCardBackPic,jdbcType=VARCHAR},
+        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT}
+        )
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
+    update t_sys_user_personal
+    set uid = #{uid,jdbcType=INTEGER},
+      id_card = #{idCard,jdbcType=VARCHAR},
+      phone_no = #{phoneNo,jdbcType=VARCHAR},
+      id_card_front_pic = #{idCardFrontPic,jdbcType=VARCHAR},
+      id_card_back_pic = #{idCardBackPic,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where t.id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+    </select>
+
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.SysUserPersonalQuery" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        <include refid="whereSql"/>
+    </select>
+
+    <select id="count" resultType="Integer">
+        select count(*)
+        <include refid="fromTable"/>
+    </select>
+
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.SysUserPersonalQuery" resultType="Integer">
+        select count(*)
+        <include refid="fromTable"/>
+        <include refid="whereSql"/>
+    </select>
+</mapper>
