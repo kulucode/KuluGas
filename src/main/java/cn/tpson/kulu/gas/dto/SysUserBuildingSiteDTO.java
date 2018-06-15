@@ -1,20 +1,26 @@
 package cn.tpson.kulu.gas.dto;
 
-import cn.tpson.kulu.gas.domain.BaseDO;
+import javax.validation.constraints.NotBlank;
 
 public class SysUserBuildingSiteDTO extends BaseDTO {
     private Integer uid;
 
+    @NotBlank(message = "施工单位名称不能为空.")
     private String name;
 
+    @NotBlank(message = "项目名称不能为空.")
     private String projName;
 
+    @NotBlank(message = "项目经理不能为空.")
     private String pm;
 
+    @NotBlank(message = "项目地址不能为空.")
     private String projAddr;
 
+    @NotBlank(message = "联系人不能为空.")
     private String contactPerson;
 
+    @NotBlank(message = "联系电话不能为空.")
     private String phoneNo;
 
     private String licenceNo;
@@ -23,6 +29,18 @@ public class SysUserBuildingSiteDTO extends BaseDTO {
 
     private String busiLicencePic;
 
+    /**
+     * 定位信息，例：{"addr":"xxx","lon":"xxx","lat":"xxx"}
+     */
+    private String location;
+
+    /**
+     * 税号.
+     */
+    private String taxId;
+
+    //////////////////////////////////////////////////////////////////////
+    private LocationDTO gps;
 
     public Integer getUid() {
         return uid;
@@ -102,5 +120,29 @@ public class SysUserBuildingSiteDTO extends BaseDTO {
 
     public void setBusiLicencePic(String busiLicencePic) {
         this.busiLicencePic = busiLicencePic;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
+    }
+
+    public LocationDTO getGps() {
+        return gps;
+    }
+
+    public void setGps(LocationDTO gps) {
+        this.gps = gps;
     }
 }

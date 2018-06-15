@@ -10,9 +10,25 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-timeout: 5000
-      maximum-pool-size: 5
+      idle-timeout: 10000
+      maximum-pool-size: 10
       auto-commit: false
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+#redis
+  redis:
+    database: 0
+    host: 192.168.1.251
+    port: 6379
+    password: kulu###2018
+    timeout: 60000ms
+    jedis:
+      pool:
+        max-active: 100
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 8
 #debug: true
 
 #eureka:

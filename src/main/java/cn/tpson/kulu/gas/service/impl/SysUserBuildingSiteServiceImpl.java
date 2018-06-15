@@ -6,6 +6,7 @@ import cn.tpson.kulu.gas.query.SysUserBuildingSiteQuery;
 import cn.tpson.kulu.gas.repository.BaseMapper;
 import cn.tpson.kulu.gas.repository.SysUserBuildingSiteDOMapper;
 import cn.tpson.kulu.gas.service.SysUserBuildingSiteService;
+import cn.tpson.kulu.gas.util.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,5 +23,11 @@ public class SysUserBuildingSiteServiceImpl extends BaseServiceImpl<SysUserBuild
     @Override
     public BaseMapper<SysUserBuildingSiteQuery, SysUserBuildingSiteDO> mapper() {
         return sysUserBuildingSiteDOMapper;
+    }
+
+    @Override
+    public SysUserBuildingSiteDTO getByUserId(Integer uid) {
+        SysUserBuildingSiteDO sysUserBuildingSiteDO = sysUserBuildingSiteDOMapper.selectByUserId(uid);
+        return BeanUtils.copyProperties(SysUserBuildingSiteDTO.class, sysUserBuildingSiteDO);
     }
 }

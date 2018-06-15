@@ -10,7 +10,7 @@
         <result column="id_card_back_pic" jdbcType="VARCHAR" property="idCardBackPic"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
-        <result column="is_deleted" jdbcType="BIT" property="isDeleted"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
     </resultMap>
 
     <sql id="fromSql">
@@ -25,7 +25,7 @@
             <if test="id != null">
                 AND t.id = #{id,jdbcType=INTEGER}
             </if>
-            <if test="pid != null">
+            <if test="uid != null">
                 AND t.uid = #{uid,jdbcType=INTEGER}
             </if>
             <if test="idCard != null and idCard != ''">
@@ -47,7 +47,7 @@
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
             <if test="deleted != null">
-                AND t.is_deleted = #{deleted,jdbcType=BOOLEAN}
+                AND t.is_deleted = #{deleted,jdbcType=BIT}
             </if>
         </where>
         <if test="offset != null">
@@ -60,7 +60,8 @@
     <!--***************************************************************************************-->
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_user_personal set is_deleted = false where id = #{id,jdbcType=INTEGER}
+        update t_sys_user_personal set is_deleted = true
+        where id = #{id,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
@@ -72,7 +73,7 @@
         )
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{idCard,jdbcType=VARCHAR},
         #{phoneNo,jdbcType=VARCHAR}, #{idCardFrontPic,jdbcType=VARCHAR}, #{idCardBackPic,jdbcType=VARCHAR},
-        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=BIT}
+        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
@@ -84,7 +85,7 @@
       id_card_back_pic = #{idCardBackPic,jdbcType=VARCHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      is_deleted = #{isDeleted,jdbcType=BIT}
+      is_deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -95,6 +96,12 @@
     <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
+    </select>
+
+    <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where t.uid = #{uid,jdbcType=INTEGER}
     </select>
 
     <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.SysUserPersonalQuery" resultMap="BaseResultMap">

@@ -1,16 +1,20 @@
 package cn.tpson.kulu.gas.dto;
 
-import cn.tpson.kulu.gas.domain.BaseDO;
+import javax.validation.constraints.NotBlank;
 
 public class SysUserPersonalDTO extends BaseDTO {
     private Integer uid;
 
+    @NotBlank(message = "身份证不能为空.")
     private String idCard;
 
+    @NotBlank(message = "联系电话不能为空.")
     private String phoneNo;
 
+    @NotBlank(message = "身份证正面照片不能为空.")
     private String idCardFrontPic;
 
+    @NotBlank(message = "身份证反面照片不能为空.")
     private String idCardBackPic;
 
     public Integer getUid() {

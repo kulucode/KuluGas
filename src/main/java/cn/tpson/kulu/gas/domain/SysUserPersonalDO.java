@@ -1,7 +1,5 @@
 package cn.tpson.kulu.gas.domain;
 
-import java.util.Date;
-
 public class SysUserPersonalDO extends BaseDO {
     private Integer uid;
 

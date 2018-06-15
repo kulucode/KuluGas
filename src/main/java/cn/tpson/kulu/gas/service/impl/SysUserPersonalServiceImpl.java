@@ -6,6 +6,7 @@ import cn.tpson.kulu.gas.query.SysUserPersonalQuery;
 import cn.tpson.kulu.gas.repository.BaseMapper;
 import cn.tpson.kulu.gas.repository.SysUserPersonalDOMapper;
 import cn.tpson.kulu.gas.service.SysUserPersonalService;
+import cn.tpson.kulu.gas.util.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,5 +23,11 @@ public class SysUserPersonalServiceImpl extends BaseServiceImpl<SysUserPersonalD
     @Override
     public BaseMapper<SysUserPersonalQuery, SysUserPersonalDO> mapper() {
         return sysUserPersonalDOMapper;
+    }
+
+    @Override
+    public SysUserPersonalDTO getByUserId(Integer uid) {
+        SysUserPersonalDO sysUserPersonalDO = sysUserPersonalDOMapper.selectByUserId(uid);
+        return BeanUtils.copyProperties(SysUserPersonalDTO.class, sysUserPersonalDO);
     }
 }

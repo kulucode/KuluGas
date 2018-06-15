@@ -11,7 +11,7 @@
         <result column="type" jdbcType="SMALLINT" property="type"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
-        <result column="is_deleted" jdbcType="BOOLEAN" property="deleted"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
     </resultMap>
 
     <sql id="fromSql">
@@ -51,7 +51,7 @@
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
             <if test="deleted != null">
-                AND t.is_deleted = #{deleted,jdbcType=BOOLEAN}
+                AND t.is_deleted = #{deleted,jdbcType=BIT}
             </if>
         </where>
         <if test="offset != null">
@@ -63,7 +63,7 @@
     </sql>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_user set is_deleted = false
+        update t_sys_user set is_deleted = true
         where id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
@@ -75,7 +75,7 @@
         values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
         #{realname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT},
         #{type,jdbcType=SMALLINT}, #{gmtCreate,jdbcType=TIMESTAMP},
-        #{gmtModified,jdbcType=TIMESTAMP}, #{deleted, jdbcType=BOOLEAN}
+        #{gmtModified,jdbcType=TIMESTAMP}, #{deleted, jdbcType=BIT}
         )
     </insert>
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
@@ -88,7 +88,7 @@
       type = #{type,jdbcType=SMALLINT},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      is_deleted = #{deleted, jdbcType=BOOLEAN}
+      is_deleted = #{deleted, jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -118,5 +118,13 @@
         select count(*)
         <include refid="fromTable"/>
         <include refid="whereSql"/>
+    </select>
+
+    <select id="getByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        <where>
+            t.username = #{username, jdbcType=VARCHAR}
+        </where>
     </select>
 </mapper>

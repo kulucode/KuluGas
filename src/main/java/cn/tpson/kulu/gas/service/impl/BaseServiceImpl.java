@@ -36,7 +36,7 @@ public abstract class BaseServiceImpl<DTO, DO, QUERY> implements BaseService<DTO
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int deleteById(Long id) {
+    public int deleteById(Integer id) {
         return mapper().deleteByPrimaryKey(id);
     }
 
@@ -47,7 +47,7 @@ public abstract class BaseServiceImpl<DTO, DO, QUERY> implements BaseService<DTO
     }
 
     @Override
-    public DTO getById(Long id) {
+    public DTO getById(Integer id) {
         DO record = mapper().selectByPrimaryKey(id);
         return BeanUtils.copyProperties(getGenericClassForDto(), record);
     }

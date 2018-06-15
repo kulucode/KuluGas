@@ -1,7 +1,5 @@
 package cn.tpson.kulu.gas.domain;
 
-import java.util.Date;
-
 public class SysUserBuildingSiteDO extends BaseDO {
     private Integer uid;
 
@@ -23,6 +21,15 @@ public class SysUserBuildingSiteDO extends BaseDO {
 
     private String busiLicencePic;
 
+    /**
+     * 定位信息，例：{"addr":"xxx","lon":xxx,"lat":xxx}
+     */
+    private String location;
+
+    /**
+     * 税号.
+     */
+    private String taxId;
 
     public Integer getUid() {
         return uid;
@@ -102,5 +109,21 @@ public class SysUserBuildingSiteDO extends BaseDO {
 
     public void setBusiLicencePic(String busiLicencePic) {
         this.busiLicencePic = busiLicencePic;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
     }
 }

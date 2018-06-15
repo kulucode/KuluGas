@@ -37,7 +37,7 @@ public class MenuTreeUtils {
      * @param pid
      * @return
      */
-    private static List<SysMenuDTO> getChildren(final List<SysMenuDTO> menus, final Long pid) {
+    private static List<SysMenuDTO> getChildren(final List<SysMenuDTO> menus, final Integer pid) {
         final List<SysMenuDTO> children = new ArrayList<>();
         menus.forEach(m -> {
             if (Objects.nonNull(m.getPid())) {

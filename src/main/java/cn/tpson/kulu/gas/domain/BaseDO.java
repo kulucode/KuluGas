@@ -1,7 +1,7 @@
 package cn.tpson.kulu.gas.domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Created by Zhangka in 2018/06/06
@@ -9,8 +9,8 @@ import java.util.Date;
 public class BaseDO implements Serializable {
     private Integer id;
     private Boolean deleted;
-    private Date gmtCreate;
-    private Date gmtModified;
+    private Instant gmtCreate;
+    private Instant gmtModified;
 
     public Integer getId() {
         return id;
@@ -28,19 +28,19 @@ public class BaseDO implements Serializable {
         this.deleted = deleted;
     }
 
-    public Date getGmtCreate() {
+    public Instant getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(Instant gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModified() {
+    public Instant getGmtModified() {
         return gmtModified;
     }
 
-    public void setGmtModified(Date gmtModified) {
+    public void setGmtModified(Instant gmtModified) {
         this.gmtModified = gmtModified;
     }
 }

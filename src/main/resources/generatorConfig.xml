@@ -35,20 +35,26 @@
         </sqlMapGenerator>
 
         <!-- mapper 所在包名 -->
-        <!--<javaClientGenerator targetPackage="${mapperPackage}" targetProject="${src_main_java}" type="XMLMAPPER">
+        <javaClientGenerator targetPackage="${mapperPackage}" targetProject="${src_main_java}" type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
-        </javaClientGenerator>-->
+        </javaClientGenerator>
 
         <!-- 要生成的表 -->
         <!-- 这里的百分号代表对该数据库中所有的表进行生成 -->
-        <table tableName="t_sys_user_building_site" domainObjectName="SysUserBuildingSiteDO">
+        <!--<table tableName="t_sys_user_building_site" domainObjectName="SysUserBuildingSiteDO">
             <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_user_building_site_id_seq'::regclass)" type="pre"/>
         </table>
-
-        <table tableName="t_sys_user_personal" domainObjectName="SysUserPersonalDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_user_personal_id_seq'::regclass)" type="pre"/>
+-->
+        <table tableName="t_eqp" domainObjectName="EqpDO">
+            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_id_seq'::regclass)" type="pre"/>
         </table>
 
+        <table tableName="t_eqp_apply" domainObjectName="EqpApplyDO">
+            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_apply_id_seq'::regclass)" type="pre"/>
+        </table>
 
+        <table tableName="t_eqp_detect" domainObjectName="EqpDetectDO">
+            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_detect_id_seq'::regclass)" type="pre"/>
+        </table>
     </context>
 </generatorConfiguration>

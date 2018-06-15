@@ -8,11 +8,11 @@ import java.util.List;
 public interface BaseMapper<QUERY, DO> {
     int insert(DO record);
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int updateByPrimaryKey(DO record);
 
-    DO selectByPrimaryKey(Long id);
+    DO selectByPrimaryKey(Integer id);
 
     List<DO> selectAll();
 

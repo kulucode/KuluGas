@@ -21,6 +21,17 @@ public class SysUserBuildingSiteQuery extends BaseQuery {
 
     private String busiLicencePic;
 
+    /**
+     * 税号
+     */
+    private String taxId;
+
+    /**
+     * 定位信息，例：{"addr":"xxx","lon":xxx,"lat":xxx}
+     */
+    private String addr;
+    private String lon;
+    private String lat;
 
     public Integer getUid() {
         return uid;
@@ -100,5 +111,37 @@ public class SysUserBuildingSiteQuery extends BaseQuery {
 
     public void setBusiLicencePic(String busiLicencePic) {
         this.busiLicencePic = busiLicencePic;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
     }
 }

@@ -47,6 +47,6 @@ public class Test2MapperTest {
         page.setCondition(dto);
         System.out.println(JSON.toJSONString(sysMenuService.pageByExample(page)));
         System.out.println(JSON.toJSONString(sysMenuService.listByExample(dto)));*/
-        System.out.println(JSON.toJSONString(sysMenuService.getById(1L)));
+        System.out.println(JSON.toJSONString(sysMenuService.getById(1)));
     }
 }

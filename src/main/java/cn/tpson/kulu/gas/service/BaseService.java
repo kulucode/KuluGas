@@ -13,11 +13,11 @@ public interface BaseService<DTO, DO, QUERY> {
 
     int insert(DTO record);
 
-    int deleteById(Long id);
+    int deleteById(Integer id);
 
     int updateById(DTO record);
 
-    DTO getById(Long id);
+    DTO getById(Integer id);
 
     List<DTO> list();
 
