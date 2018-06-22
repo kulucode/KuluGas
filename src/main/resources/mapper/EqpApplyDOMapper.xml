@@ -16,7 +16,7 @@
     </resultMap>
 
     <sql id="fromSql">
-        id, uid, phone_no, addr, location, status, type, comment, is_deleted, gmt_create, gmt_modified
+        t.id, t.uid, t.phone_no, t.addr, t.location, t.status, t.type, t.comment, t.is_deleted, t.gmt_create, t.gmt_modified
         from t_eqp_apply t
     </sql>
     <sql id="fromTable">
@@ -58,6 +58,8 @@
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
         </where>
+    </sql>
+    <sql id="pageSql">
         <if test="offset != null">
             OFFSET #{offset,jdbcType=INTEGER}
         </if>
@@ -65,67 +67,108 @@
             LIMIT #{limit,jdbcType=INTEGER}
         </if>
     </sql>
+    <sql id="orderSql">
+        ORDER BY t.gmt_modified DESC, t.id DESC
+    </sql>
     <!--***************************************************************************************-->
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    update t_eqp_apply set is_deleted = true
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+        update t_eqp_apply set is_deleted = true
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpApplyDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_eqp_apply_id_seq'::regclass)
         </selectKey>
-        insert into t_eqp_apply (id, uid, phone_no, addr, location, status, type, comment, is_deleted, gmt_create, gmt_modified)
+        insert into t_eqp_apply (id, uid, phone_no, addr, location, status, type, comment, is_deleted, gmt_create,
+        gmt_modified)
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{phoneNo,jdbcType=VARCHAR},
         #{addr,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}::jsonb, #{status,jdbcType=SMALLINT},
         #{type,jdbcType=SMALLINT}, #{comment,jdbcType=VARCHAR}, #{deleted,jdbcType=BIT},
         #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
     </insert>
+
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpApplyDO">
-    update t_eqp_apply
-    set uid = #{uid,jdbcType=INTEGER},
-      phone_no = #{phoneNo,jdbcType=VARCHAR},
-      addr = #{addr,jdbcType=VARCHAR},
-      location = #{location,jdbcType=VARCHAR}::jsonb,
-      is_deleted = #{deleted,jdbcType=BIT},
-      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=SMALLINT},
-      type = #{type,jdbcType=SMALLINT},
-      comment = #{comment,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        update t_eqp_apply
+        <set>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="phoneNo != null and phoneNo != ''">
+                phone_no = #{phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="addr != null and addr != ''">
+                addr = #{addr,jdbcType=VARCHAR},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location,jdbcType=VARCHAR}::jsonb,
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=SMALLINT},
+            </if>
+            <if test="comment != null and comment != ''">
+                comment = #{comment,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
 
     <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
-        where uid = #{uid,jdbcType=INTEGER}
+        where t.uid = #{uid,jdbcType=INTEGER} AND t.is_deleted = false
     </select>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
-        where id = #{id,jdbcType=INTEGER}
+        where t.id = #{id,jdbcType=INTEGER} AND t.is_deleted = false
     </select>
+
     <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
+        where t.is_deleted = false
+        <include refid="orderSql"/>
     </select>
 
     <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.EqpApplyQuery" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
         <include refid="whereSql"/>
+        <include refid="orderSql"/>
+        <include refid="pageSql" />
     </select>
 
     <select id="count" resultType="Integer">
-        select count(*)
+        select count(t.*)
         <include refid="fromTable"/>
+        where t.is_deleted = false
     </select>
 
     <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.EqpApplyQuery" resultType="Integer">
-        select count(*)
+        select count(t.*)
         <include refid="fromTable"/>
         <include refid="whereSql"/>
     </select>
+
+    <insert id="insertApplyEqp" parameterType="java.util.Map">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_eqp_apply_eqp_id_seq'::regclass)
+        </selectKey>
+        insert into t_eqp_apply (id, apply_id, eqp_id)
+        values (#{id,jdbcType=INTEGER}, #{apply_id,jdbcType=INTEGER}, #{eqp_id,jdbcType=INTEGER})
+    </insert>
 </mapper>

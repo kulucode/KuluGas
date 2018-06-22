@@ -1,13 +1,11 @@
-package cn.tpson.kulu.gas.repository;
+package cn.tpson.kulu.gas.service;
 
 import cn.tpson.kulu.gas.dto.SysUserDTO;
-import cn.tpson.kulu.gas.service.RedisService;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.concurrent.TimeUnit;

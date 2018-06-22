@@ -12,6 +12,8 @@ public interface BaseMapper<QUERY, DO> {
 
     int updateByPrimaryKey(DO record);
 
+    int updateByPrimaryKeys(QUERY update);
+
     DO selectByPrimaryKey(Integer id);
 
     List<DO> selectAll();

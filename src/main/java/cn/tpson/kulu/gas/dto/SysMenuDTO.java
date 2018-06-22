@@ -1,5 +1,6 @@
 package cn.tpson.kulu.gas.dto;
 
+import java.time.Instant;
 import java.util.List;
 
 public class SysMenuDTO extends BaseDTO {
@@ -21,6 +22,12 @@ public class SysMenuDTO extends BaseDTO {
     private Boolean checked;// 标记前端页面是否被选中
 
     private List<SysMenuDTO> children;
+
+    public SysMenuDTO() {}
+
+    public SysMenuDTO(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        super(id, deleted, gmtCreate, gmtModified);
+    }
 
     public Long getPid() {
         return pid;

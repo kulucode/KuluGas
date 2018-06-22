@@ -1,7 +1,9 @@
 package cn.tpson.kulu.gas.dto;
 
+import cn.tpson.kulu.gas.json.InstantSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -18,8 +20,19 @@ public class BaseDTO implements Serializable {
 
     private Integer id;
     private Boolean deleted;
+    @JsonSerialize(using = InstantSerializer.class)
     private Instant gmtCreate;
+    @JsonSerialize(using = InstantSerializer.class)
     private Instant gmtModified;
+
+    public BaseDTO() {}
+
+    public BaseDTO(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        this.id = id;
+        this.deleted = deleted;
+        this.gmtCreate = gmtCreate;
+        this.gmtModified = gmtModified;
+    }
 
     public Integer getOffset() {
         return offset;

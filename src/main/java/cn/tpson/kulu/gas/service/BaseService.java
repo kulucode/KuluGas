@@ -1,6 +1,6 @@
 package cn.tpson.kulu.gas.service;
 
-import cn.tpson.kulu.gas.dto.Page;
+import cn.tpson.kulu.gas.dto.TableDTO;
 import cn.tpson.kulu.gas.repository.BaseMapper;
 
 import java.util.List;
@@ -17,6 +17,8 @@ public interface BaseService<DTO, DO, QUERY> {
 
     int updateById(DTO record);
 
+    int updateByIds(QUERY query);
+
     DTO getById(Integer id);
 
     List<DTO> list();
@@ -27,5 +29,5 @@ public interface BaseService<DTO, DO, QUERY> {
 
     int countByExample(QUERY example);
 
-    Page<DTO> pageByExample(QUERY example);
+    TableDTO<DTO> pageByExample(QUERY example);
 }

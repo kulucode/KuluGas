@@ -1,10 +1,21 @@
 package cn.tpson.kulu.gas.query;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
-public class EqpDetectQuery extends BaseQuery {
+public class EqpDetectLogQuery extends BaseQuery {
+    /**
+     * 搜索来源表格.
+     * 1：施工单位进场申请；2：施工单位定期检测；3：施工单位设备台账；4：服务公司进场记录；5：服务公司日常检测；6:服务公司设备台账；7：政府部门设备台账；8：政府部门进场审核；
+     */
+    public static int SOURCE_1 = 1;
+    public static int SOURCE_2 = 2;
+    public static int SOURCE_3 = 3;
+    public static int SOURCE_4 = 4;
+    public static int SOURCE_5 = 5;
+    public static int SOURCE_6 = 6;
+    public static int SOURCE_7 = 7;
+    public static int SOURCE_8 = 8;
     /**
      * 设备id.--> t_eqp.
      */
@@ -26,28 +37,10 @@ public class EqpDetectQuery extends BaseQuery {
     private Short status;
 
     /**
-     * 检测类型，0：进场检测；1：定期检测；2：设备台账
+     * 检测类型，0：进场检测；1：定期检测；
      */
     private Short type;
 
-    /**
-     * 关联日志表id.
-     */
-    private Integer logId;
-
-    /**
-     * 关联日志表id.
-     */
-    private Integer lastLogId;
-
-    /**
-     * 检测时间.
-     */
-    private Instant gmtDetect;
-    /**
-     * 上次检测时间.
-     */
-    private Instant gmtLastDetect;
 
     /////////////////////////////////////////////////////////////////////////////
     private Integer uid;
@@ -55,7 +48,6 @@ public class EqpDetectQuery extends BaseQuery {
     private LocalDateTime endTime;
     private String key;     // 搜索关键字
     private Short eqpType;  // 设备类型
-    private Short source;   // 搜索表格来源
 
     public Integer getEqpId() {
         return eqpId;
@@ -135,45 +127,5 @@ public class EqpDetectQuery extends BaseQuery {
 
     public void setEqpType(Short eqpType) {
         this.eqpType = eqpType;
-    }
-
-    public Integer getLogId() {
-        return logId;
-    }
-
-    public void setLogId(Integer logId) {
-        this.logId = logId;
-    }
-
-    public Integer getLastLogId() {
-        return lastLogId;
-    }
-
-    public void setLastLogId(Integer lastLogId) {
-        this.lastLogId = lastLogId;
-    }
-
-    public Short getSource() {
-        return source;
-    }
-
-    public void setSource(Short source) {
-        this.source = source;
-    }
-
-    public Instant getGmtDetect() {
-        return gmtDetect;
-    }
-
-    public void setGmtDetect(Instant gmtDetect) {
-        this.gmtDetect = gmtDetect;
-    }
-
-    public Instant getGmtLastDetect() {
-        return gmtLastDetect;
-    }
-
-    public void setGmtLastDetect(Instant gmtLastDetect) {
-        this.gmtLastDetect = gmtLastDetect;
     }
 }

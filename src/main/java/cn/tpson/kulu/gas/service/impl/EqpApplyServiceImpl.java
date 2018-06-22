@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Zhangka in 2018/06/15
@@ -35,10 +37,23 @@ public class EqpApplyServiceImpl extends BaseServiceImpl<EqpApplyDTO, EqpApplyDO
     public int insert(EqpApplyDTO record) {
         int id = super.insert(record);
         if (record.getEqps() != null) {
-            record.getEqps().forEach(eqpDTO -> {
-                eqpDTO.setApplyId(id);
-                eqpService.insert(eqpDTO);
-            });
+            if (record.getType() == EqpApplyDTO.TYPE_INSTALL) {
+                record.getEqps().forEach(eqpDTO -> {
+                    eqpDTO.setUid(record.getUid());
+                    eqpDTO.setGmtCreate(record.getGmtCreate());
+                    eqpDTO.setDeleted(Boolean.FALSE);
+                    eqpService.insert(eqpDTO);
+                });
+            } else if (record.getType() == EqpApplyDTO.TYPE_UNINSTALL) {
+                record.getEqps().forEach(eqpDTO -> {
+                    if (eqpDTO.getId() != null) {
+                        Map<String, Integer> params = new HashMap<>(2);
+                        params.put("applyId", id);
+                        params.put("eqpId", eqpDTO.getId());
+                        eqpApplyDOMapper.insertApplyEqp(params);
+                    }
+                });
+            }
         }
 
         return id;

@@ -32,9 +32,9 @@ public class EqpQuery extends BaseQuery {
     private String ownerName;
 
     /**
-     * 申请id.--> t_eqp_apply.
+     * 申请id.
      */
-    private Integer applyId;
+    private Integer uid;
 
     public String getEqpNo() {
         return eqpNo;
@@ -84,11 +84,11 @@ public class EqpQuery extends BaseQuery {
         this.ownerName = ownerName;
     }
 
-    public Integer getApplyId() {
-        return applyId;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setApplyId(Integer applyId) {
-        this.applyId = applyId;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 }

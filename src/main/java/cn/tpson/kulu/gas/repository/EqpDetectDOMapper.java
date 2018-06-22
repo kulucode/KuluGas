@@ -17,4 +17,25 @@ public interface EqpDetectDOMapper extends BaseMapper<EqpDetectQuery, EqpDetectD
      * @return
      */
     List<EqpDetectDO> selectByEqpId(Integer eqpId);
+
+    /**
+     * 模糊搜索.
+     * @param query.key
+     * @return
+     */
+    List<EqpDetectDO> search(EqpDetectQuery query);
+
+    /**
+     * 模糊搜索记录数.
+     * @param query.key
+     * @return
+     */
+    Integer countBySearch(EqpDetectQuery query);
+
+    /**
+     * 更新log表.
+     * @param record
+     * @return
+     */
+    int updateLogByPrimaryKey(EqpDetectDO record);
 }

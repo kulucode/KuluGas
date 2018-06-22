@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.tpson.kulu.gas.repository.EqpDetectDOMapper">
-    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpDetectDO">
+<mapper namespace="cn.tpson.kulu.gas.repository.EqpDetectLogDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpDetectLogDO">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="eqp_id" jdbcType="INTEGER" property="eqpId"/>
-        <result column="log_id" jdbcType="INTEGER" property="logId"/>
-        <result column="last_log_id" jdbcType="INTEGER" property="lastLogId"/>
         <result column="detect_value" jdbcType="NUMERIC" property="detectValue"/>
         <result column="detect_no" jdbcType="VARCHAR" property="detectNo"/>
         <result column="status" jdbcType="SMALLINT" property="status"/>
-        <result column="type" jdbcType="SMALLINT" property="type"/>
         <result column="is_deleted" jdbcType="BIT" property="deleted"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
-        <result column="gmt_last_detect" jdbcType="TIMESTAMP" property="gmtLastDetect"/>
-        <result column="gmt_detect" jdbcType="TIMESTAMP" property="gmtDetect"/>
+        <result column="type" jdbcType="SMALLINT" property="type"/>
     </resultMap>
 
     <sql id="fromSql">
-        t.id, t.eqp_id, t.log_id, t.last_log_id, t.detect_value, t.detect_no, t.status, t.type, t.is_deleted, t.gmt_create, t.gmt_modified, t.gmt_last_detect, gmt_detect
-        from t_eqp_detect t
+        t.id, t.eqp_id, t.detect_value, t.detect_no, t.status, t.type, t.is_deleted, t.gmt_create, t.gmt_modified
+        from t_eqp_detect_log t
     </sql>
     <sql id="fromTable">
-        from t_eqp_detect t
+        from t_eqp_detect_log t
     </sql>
     <sql id="whereSql">
         <where>
@@ -31,12 +27,6 @@
             </if>
             <if test="eqpId != null">
                 AND t.eqp_id = #{eqpId,jdbcType=INTEGER}
-            </if>
-            <if test="logId != null">
-                AND t.log_id = #{logId,jdbcType=INTEGER}
-            </if>
-            <if test="lastLogId != null">
-                AND t.last_log_id = #{lastLogId,jdbcType=INTEGER}
             </if>
             <if test="detectValue != null">
                 AND t.detect_value = #{detectValue,jdbcType=NUMERIC}
@@ -52,12 +42,6 @@
             </if>
             <if test="gmtModified != null">
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
-            </if>
-            <if test="gmtLastDetect != null">
-                AND t.gmt_last_detect = #{gmtLastDetect,jdbcType=TIMESTAMP}
-            </if>
-            <if test="gmtDetect != null">
-                AND t.gmt_detect = #{gmtDetect,jdbcType=TIMESTAMP}
             </if>
             <if test="deleted != null">
                 AND t.is_deleted = #{deleted,jdbcType=BIT}
@@ -83,68 +67,24 @@
     </sql>
     <!--***************************************************************************************-->
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_eqp_detect set is_deleted = true
+        update t_eqp_detect_log set is_deleted = true
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
-    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpDetectDO">
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpDetectLogDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
-            SELECT nextval('t_eqp_detect_id_seq'::regclass)
+            SELECT nextval('t_eqp_detect_log_id_seq'::regclass)
         </selectKey>
-        insert into t_eqp_detect (id, eqp_id, log_id, last_log_id, detect_value,
-        detect_no, status, type, is_deleted, gmt_create, gmt_modified, gmt_last_detect, gmt_detect
+        insert into t_eqp_detect_log (id, eqp_id, detect_value,
+        detect_no, status, type, is_deleted, gmt_create, gmt_modified
         )
-        values (#{id,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{logId,jdbcType=INTEGER},
-        #{lastLogId,jdbcType=INTEGER}, #{detectValue,jdbcType=NUMERIC},
+        values (#{id,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{detectValue,jdbcType=NUMERIC},
         #{detectNo,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT}, #{deleted,jdbcType=BIT},
-        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{gmtLastDetect,jdbcType=TIMESTAMP}, #{gmtDetect,jdbcType=TIMESTAMP}
+        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
         )
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpDetectDO">
-        update t_eqp_detect
-        <set>
-            <if test="eqpId != null">
-                eqp_id = #{eqpId,jdbcType=INTEGER},
-            </if>
-            <if test="logId != null">
-                log_id = #{logId,jdbcType=INTEGER},
-            </if>
-            <if test="lastLogId != null">
-                last_log_id = #{lastLogId,jdbcType=INTEGER},
-            </if>
-            <if test="detectValue != null">
-                detect_value = #{detectValue,jdbcType=NUMERIC},
-            </if>
-            <if test="detectNo != null and detectNo != ''">
-                detect_no = #{detectNo,jdbcType=VARCHAR},
-            </if>
-            <if test="status != null">
-                status = #{status,jdbcType=SMALLINT},
-            </if>
-            <if test="type != null">
-                type = #{type,jdbcType=SMALLINT},
-            </if>
-            <if test="deleted != null">
-                is_deleted = #{deleted,jdbcType=BIT},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtLastDetect != null">
-                gmt_last_detect = #{gmtLastDetect,jdbcType=TIMESTAMP}
-            </if>
-            <if test="gmtDetect != null">
-                gmt_detect = #{gmtDetect,jdbcType=TIMESTAMP}
-            </if>
-        </set>
-        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
-    </update>
-
-    <update id="updateLogByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpDetectDO">
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpDetectLogDO">
         update t_eqp_detect_log
         <set>
             <if test="eqpId != null">
@@ -159,9 +99,6 @@
             <if test="status != null">
                 status = #{status,jdbcType=SMALLINT},
             </if>
-            <if test="type != null">
-                type = #{type,jdbcType=SMALLINT}
-            </if>
             <if test="deleted != null">
                 is_deleted = #{deleted,jdbcType=BIT},
             </if>
@@ -171,8 +108,11 @@
             <if test="gmtModified != null">
                 gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
             </if>
+            <if test="type != null">
+                type = #{type,jdbcType=SMALLINT}
+            </if>
         </set>
-        where id = (SELECT log_id FROM t_eqp_detect WHERE id = #{id,jdbcType=INTEGER}) AND is_deleted = false
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
     </update>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -192,10 +132,9 @@
         select
         <include refid="fromSql"/>
         where t.eqp_id = #{eqpId,jdbcType=VARCHAR} AND t.is_deleted = false
-        ORDER BY t.gmt_modified DESC, t.id DESC
     </select>
 
-    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectQuery" resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectLogQuery" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
         <if test="uid != null">
@@ -212,7 +151,7 @@
         where t.is_deleted = false
     </select>
 
-    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectQuery" resultType="Integer">
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectLogQuery" resultType="Integer">
         select count(t.*)
         <include refid="fromTable"/>
         <if test="uid != null">
@@ -221,7 +160,7 @@
         <include refid="whereSql"/>
     </select>
 
-    <select id="search" parameterType="cn.tpson.kulu.gas.query.EqpDetectQuery" resultMap="BaseResultMap">
+    <select id="search" parameterType="cn.tpson.kulu.gas.query.EqpDetectLogQuery" resultMap="BaseResultMap">
         <bind name="skey" value="'%' + _parameter.key + '%'"/>
         select
         <include refid="fromSql"/>
@@ -239,7 +178,7 @@
         <include refid="pageSql"/>
     </select>
 
-    <select id="countBySearch" parameterType="cn.tpson.kulu.gas.query.EqpDetectQuery" resultType="Integer">
+    <select id="countBySearch" parameterType="cn.tpson.kulu.gas.query.EqpDetectLogQuery" resultType="Integer">
         <bind name="skey" value="'%' + _parameter.key + '%'"/>
         select count(t.*)
         <include refid="fromTable"/>

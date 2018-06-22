@@ -3,15 +3,22 @@ package cn.tpson.kulu.gas.dto;
 import com.alibaba.fastjson.JSON;
 
 import javax.validation.constraints.NotBlank;
+import java.time.Instant;
 import java.util.List;
 
 public class SysUserDTO extends BaseDTO {
-    public static final String TOKEN_NAME = "sid";
+    public static final String SID = "sid";
 
+    /**
+     * 状态，0：正常；1：待审核；2：拒绝
+     */
     public static final short STATUS_NORMAL = 0;
     public static final short STATUS_WAITING = 1;
     public static final short STATUS_REFUSED = 2;
 
+    /**
+     * 0:系统管理员;1:政府;2:服务公司;3:施工单位;4:个人机主;5:工程安装;
+     */
     public static final short TYPE_SYS = 0;
     public static final short TYPE_GOV = 1;
     public static final short TYPE_SER = 2;
@@ -24,7 +31,7 @@ public class SysUserDTO extends BaseDTO {
 
     private String nickname;
 
-    @NotBlank(message = "姓名不能为空.")
+    //@NotBlank(message = "姓名不能为空.")
     private String realname;
 
     @NotBlank(message = "密码不能为空.")
@@ -48,6 +55,12 @@ public class SysUserDTO extends BaseDTO {
     private SysUserPersonalDTO personal;
 
     private List<SysRoleDTO> sysRoles;
+
+    public SysUserDTO() {}
+
+    public SysUserDTO(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        super(id, deleted, gmtCreate, gmtModified);
+    }
 
     public String getUsername() {
         return username;

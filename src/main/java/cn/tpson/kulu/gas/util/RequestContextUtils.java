@@ -1,5 +1,7 @@
 package cn.tpson.kulu.gas.util;
 
+import cn.tpson.kulu.gas.dto.SysUserDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -22,4 +24,18 @@ public class RequestContextUtils {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
         return servletRequestAttributes.getResponse();
     }
+
+    public static String getValue(String name) {
+        HttpServletRequest request = getRequest();
+		String value = CookieUtils.getCookie(request, name);
+
+		if (StringUtils.isBlank(value)) {
+			value = request.getParameter(name);
+		}
+		if (StringUtils.isBlank(value)) {
+			value = request.getHeader(name);
+		}
+
+		return value;
+	}
 }

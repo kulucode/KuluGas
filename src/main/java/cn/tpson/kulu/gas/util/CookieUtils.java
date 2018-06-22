@@ -48,13 +48,15 @@ public class CookieUtils {
 	 * @param response
 	 * @param name
 	 * @param value
-	 * @param maxage
 	 */
 	public static void setCookie(HttpServletResponse response, String name, String value, int maxAge) {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setMaxAge(maxAge);
 		cookie.setPath("/");
-
 		response.addCookie(cookie);
+	}
+
+	public static void delCookie(HttpServletResponse response, String name) {
+		setCookie(response, name, null, 0);
 	}
 }

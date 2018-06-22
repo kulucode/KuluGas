@@ -1,5 +1,7 @@
 package cn.tpson.kulu.gas.dto;
 
+import com.alibaba.fastjson.JSON;
+
 import java.util.List;
 
 /**
@@ -23,40 +25,48 @@ public class Page<E> extends BaseDTO {
 	 */
 	public static final int DEFAULT_PAGE_SIZE = 10;
 
-	private int pageNo = DEFAULT_PAGE_NO; // 页码
+	private int pageNumber = DEFAULT_PAGE_NO; // 页码
 	private int pageSize = DEFAULT_PAGE_SIZE; // 页面大小
-	private long totalCount; // 总的记录数
-	private List<E> resultList; // 返回的查询结果集
+	private int totalRow; // 总的记录数
+	private List<E> list; // 返回的查询结果集
 	private E condition;		//查询条件
 
 	public Page() {
 		super();
 	}
 
-	public Page(long totalCount, List<E> resultList) {
-		this.totalCount = totalCount;
-		this.resultList = resultList;
+	public Page(int total, List<E> resultList) {
+		this.totalRow = total;
+		this.list = resultList;
 	}
 
-	public Page(int pageNo, int pageSize) {
-		super();
-		setPageNo(pageNo);
-		setPageSize(pageSize);
+	public Page(Integer offset, Integer limit) {
+		if (offset == null || offset <= 0) {
+			pageNumber = DEFAULT_PAGE_NO;
+		} else {
+            pageNumber = offset / limit + 1;
+		}
+
+		if (limit == null || limit <= 0) {
+			pageSize = DEFAULT_PAGE_SIZE;
+		} else {
+			pageSize = limit;
+		}
 	}
 
 	public Page(int pageNo, int pageSize, int pageNaviSize) {
 		this(pageNo, pageSize);
 	}
 
-	public int getPageNo() {
-		return pageNo;
+	public int getPageNumber() {
+		return pageNumber;
 	}
 
-	public void setPageNo(int pageNo) {
-		if (pageNo < 1) {
-			pageNo = DEFAULT_PAGE_NO;
+	public void setPageNumber(int pageNumber) {
+		if (pageNumber < 1) {
+            pageNumber = DEFAULT_PAGE_NO;
 		}
-		this.pageNo = pageNo;
+		this.pageNumber = pageNumber;
 	}
 
 	public int getPageSize() {
@@ -70,20 +80,20 @@ public class Page<E> extends BaseDTO {
 		this.pageSize = pageSize;
 	}
 
-	public long getTotalCount() {
-		return totalCount;
+	public int getTotalRow() {
+		return totalRow;
 	}
 
-	public void setTotalCount(long totalCount) {
-		this.totalCount = totalCount;
+	public void setTotalRow(int totalRow) {
+		this.totalRow = totalRow;
 	}
 
-	public List<E> getResultList() {
-		return resultList;
+	public List<E> getList() {
+		return list;
 	}
 
-	public void setResultList(List<E> resultList) {
-		this.resultList = resultList;
+	public void setList(List<E> list) {
+		this.list = list;
 	}
 
 	public E getCondition() {
@@ -100,10 +110,10 @@ public class Page<E> extends BaseDTO {
 	 * @return
 	 */
 	public long getTotalPage() {
-		if (totalCount % pageSize > 0) {
-			return totalCount / pageSize + 1;
+		if (totalRow % pageSize > 0) {
+			return totalRow / pageSize + 1;
 		} else {
-			return totalCount / pageSize;
+			return totalRow / pageSize;
 		}
 	}
 
@@ -113,7 +123,7 @@ public class Page<E> extends BaseDTO {
 	 * @return
 	 */
 	public int getFirstIndex() {
-		return (pageNo - 1) * pageSize;
+		return (pageNumber - 1) * pageSize;
 	}
 	
 	/**
@@ -131,7 +141,7 @@ public class Page<E> extends BaseDTO {
 	 * @return
 	 */
 	public boolean isHasNextPage() {
-		return (pageNo + 1) <= getTotalPage();
+		return (pageNumber + 1) <= getTotalPage();
 	}
 
 	/**
@@ -140,7 +150,7 @@ public class Page<E> extends BaseDTO {
 	 * @return
 	 */
 	public int getNextPage() {
-		return pageNo + 1;
+		return pageNumber + 1;
 	}
 
 	/**
@@ -149,7 +159,7 @@ public class Page<E> extends BaseDTO {
 	 * @return
 	 */
 	public boolean isHasPrePage() {
-		return (pageNo - 1) > 0;
+		return (pageNumber - 1) > 0;
 	}
 
 	/**
@@ -158,13 +168,17 @@ public class Page<E> extends BaseDTO {
 	 * @return
 	 */
 	public int getPrePage() {
-		return pageNo - 1;
+		return pageNumber - 1;
 	}
 
 	@Override
 	public String toString() {
-		return "Page [pageNo=" + pageNo + ", pageSize=" + pageSize + ", totalCount="
-				+ totalCount + ", resultList=" + resultList + "]";
+		return "Page [pageNumber=" + pageNumber + ", pageSize=" + pageSize + ", totalRow="
+				+ totalRow + ", list=" + list + "]";
 	}
+
+	/*public static void main(String[] args) {
+		System.out.println(JSON.toJSONString(new Page()));
+	}*/
 }
 

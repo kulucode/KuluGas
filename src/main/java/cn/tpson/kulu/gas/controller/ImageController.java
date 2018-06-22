@@ -33,7 +33,7 @@ public class ImageController {
      * @return
      */
     @PostMapping("/upload")
-    public ResultVO upload(@RequestParam("f") MultipartFile f) {
+    public ResultVO upload(@RequestParam("uploaded_file") MultipartFile f) {
         String filename = filename(f.getOriginalFilename());
         String userDir = System.getProperty("user.dir");
         int region = ThreadLocalRandom.current().nextInt(MAX_PATH) % MAX_PATH;
@@ -48,12 +48,6 @@ public class ImageController {
              FileChannel out = FileChannel.open(path, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE))) {
 
             out.transferFrom(in, 0, f.getSize());
-            /*ByteBuffer bytebuffer = ByteBuffer.allocateDirect(1024);
-            while (in.read(bytebuffer) > 0) {
-                bytebuffer.flip();
-                out.write(bytebuffer);
-                bytebuffer.clear();
-            }*/
         } catch (Exception e) {
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("拷贝文件时出错", e);
@@ -80,12 +74,6 @@ public class ImageController {
              FileChannel in = FileChannel.open(path, EnumSet.of(StandardOpenOption.CREATE_NEW, StandardOpenOption.READ))) {
 
             in.transferTo(0, in.size(), out);
-            /*ByteBuffer bytebuffer = ByteBuffer.allocateDirect(1024);
-            while (in.read(bytebuffer) > 0) {
-                bytebuffer.flip();
-                out.write(bytebuffer);
-                bytebuffer.clear();
-            }*/
         } catch (Exception e) {
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("下载文件时出错", e);

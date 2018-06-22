@@ -16,6 +16,10 @@ public class SysUserQuery extends BaseQuery {
      */
     private Short type;
 
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    private Integer[] ids;
+
     public String getUsername() {
         return username;
     }
@@ -62,5 +66,13 @@ public class SysUserQuery extends BaseQuery {
 
     public void setType(Short type) {
         this.type = type;
+    }
+
+    public Integer[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Integer[] ids) {
+        this.ids = ids;
     }
 }

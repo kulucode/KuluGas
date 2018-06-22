@@ -20,20 +20,19 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    public static final String DEFAULT_ERROR_VIEW = "error";
-
-    @ExceptionHandler(value = ParamRuntimeException.class)
-    @ResponseBody
-    public ResultVO baseErrorHandler(HttpServletRequest req, Exception e) {
-        LOGGER.error("参数错误", e);
-        return ResultVO.failResult(e.getMessage());
-    }
 
     @ExceptionHandler(value = Throwable.class)
     @ResponseBody
-    public ResultVO defaultErrorHandler(HttpServletRequest req, Throwable e) {
-        String message = e.getMessage();
-        if (e instanceof BindException) {
+    public String defaultErrorHandler(HttpServletRequest req, Throwable e) {
+        String message = "服务器睡着了.";
+        int errorCode = -1;
+
+        if (e instanceof BusinessRuntimeException) {
+            return e.getMessage();
+        } else if (e instanceof AuthRuntimeException) {
+            message = e.getMessage();
+            errorCode = 403;
+        } else if (e instanceof BindException) {
             BindException ex = (BindException)e;
             BindingResult bindingResult = ex.getBindingResult();
             if (bindingResult.hasErrors()) {
@@ -46,10 +45,11 @@ class GlobalExceptionHandler {
             message = "不支持[" + ex.getMethod() + "]方法";
         } else if (e instanceof HttpMessageNotReadableException) {
             message = "请求参数不能为空";
+        } else if (e instanceof PermRuntimeException) {
+            message = "无权操作";
         }
-        else {
-            LOGGER.error("出错了", e);
-        }
-        return ResultVO.failResult(message);
+
+        LOGGER.error("出错啦", e);
+        return ResultVO.failResult(message, errorCode).toString();
     }
 }

@@ -1,6 +1,7 @@
 package cn.tpson.kulu.gas.dto;
 
 import javax.validation.constraints.NotBlank;
+import java.time.Instant;
 
 public class SysUserPersonalDTO extends BaseDTO {
     private Integer uid;
@@ -16,6 +17,12 @@ public class SysUserPersonalDTO extends BaseDTO {
 
     @NotBlank(message = "身份证反面照片不能为空.")
     private String idCardBackPic;
+
+    public SysUserPersonalDTO() {}
+
+    public SysUserPersonalDTO(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        super(id, deleted, gmtCreate, gmtModified);
+    }
 
     public Integer getUid() {
         return uid;

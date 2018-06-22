@@ -15,7 +15,8 @@ public class EqpDO extends BaseDO {
     private String brand;
 
     /**
-     * 类型，1:推土机;2:挖掘机;3:旋挖钻;4:打桩机;5:其他;
+     * 类型
+     * @see cn.tpson.kulu.gas.constant.EqpTypeEnum
      */
     private Short type;
 
@@ -35,9 +36,9 @@ public class EqpDO extends BaseDO {
     private String ownerName;
 
     /**
-     * 申请id.--> t_eqp_apply.
+     * 申请者id.
      */
-    private Integer applyId;
+    private Integer uid;
 
     public String getEqpNo() {
         return eqpNo;
@@ -87,11 +88,11 @@ public class EqpDO extends BaseDO {
         this.ownerName = ownerName;
     }
 
-    public Integer getApplyId() {
-        return applyId;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setApplyId(Integer applyId) {
-        this.applyId = applyId;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 }

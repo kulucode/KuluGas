@@ -1,9 +1,7 @@
 package cn.tpson.kulu.gas.dto;
 
-import com.alibaba.fastjson.JSON;
-
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 public class EqpApplyDTO extends BaseDTO {
     public static final short TYPE_INSTALL = 1;
@@ -50,6 +48,12 @@ public class EqpApplyDTO extends BaseDTO {
     //////////////////////////////////////////////////////////////////////////////////////////////
     private List<EqpDTO> eqps;
     private LocationDTO gps;
+
+    public EqpApplyDTO() {}
+
+    public EqpApplyDTO(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        super(id, deleted, gmtCreate, gmtModified);
+    }
 
     public Integer getUid() {
         return uid;

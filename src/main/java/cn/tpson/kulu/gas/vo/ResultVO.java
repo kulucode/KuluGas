@@ -1,5 +1,7 @@
 package cn.tpson.kulu.gas.vo;
 
+import cn.tpson.kulu.gas.constant.ErrorCodeEnum;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -27,6 +29,14 @@ public class ResultVO {
 	public static ResultVO failResult(String message) {
 		return new ResultVO(false, message, -1, null);
 	}
+
+	public static ResultVO failResult(String message, int code) {
+		return new ResultVO(false, message, code, null);
+	}
+
+    public static ResultVO failResult(final ErrorCodeEnum errorCodeEnum) {
+        return new ResultVO(false, errorCodeEnum.getMessage(), errorCodeEnum.getCode(), null);
+    }
 	
 	public boolean isSuccess() {
 		return success;
@@ -53,5 +63,16 @@ public class ResultVO {
 
 	public void setData(Object data) {
 		this.data = data;
+	}
+
+	@Override
+	public String toString() {
+		JSONObject json = new JSONObject();
+		json.put("success", success);
+		json.put("message", message);
+		json.put("code", code);
+		json.put("data", data);
+
+		return json.toJSONString();
 	}
 }

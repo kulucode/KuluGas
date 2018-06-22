@@ -1,6 +1,9 @@
 package cn.tpson.kulu.gas.dto;
 
+import java.time.Instant;
+
 public class EqpDTO extends BaseDTO {
+
     /**
      * 设备标识号.
      */
@@ -12,7 +15,8 @@ public class EqpDTO extends BaseDTO {
     private String brand;
 
     /**
-     * 类型，1:推土机;2:挖掘机;3:旋挖钻;4:打桩机;5:其他;
+     * 类型.
+     * @see cn.tpson.kulu.gas.constant.EqpTypeEnum;
      */
     private Short type;
 
@@ -32,9 +36,15 @@ public class EqpDTO extends BaseDTO {
     private String ownerName;
 
     /**
-     * 申请id.--> t_eqp_apply.
+     * 申请id.
      */
-    private Integer applyId;
+    private Integer uid;
+
+    public EqpDTO() {}
+
+    public EqpDTO(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        super(id, deleted, gmtCreate, gmtModified);
+    }
 
     public String getEqpNo() {
         return eqpNo;
@@ -84,11 +94,11 @@ public class EqpDTO extends BaseDTO {
         this.ownerName = ownerName;
     }
 
-    public Integer getApplyId() {
-        return applyId;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setApplyId(Integer applyId) {
-        this.applyId = applyId;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 }

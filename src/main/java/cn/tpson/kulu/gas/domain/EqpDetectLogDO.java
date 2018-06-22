@@ -1,12 +1,11 @@
 package cn.tpson.kulu.gas.domain;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 /**
  * 设备检查实体.
  */
-public class EqpDetectDO extends BaseDO {
+public class EqpDetectLogDO extends BaseDO {
     /**
      * 设备id.--> t_eqp.
      */
@@ -31,25 +30,6 @@ public class EqpDetectDO extends BaseDO {
      * 检测类型，0：进场检测；1：定期检测；
      */
     private Short type;
-
-    /**
-     * 关联日志表id.
-     */
-    private Integer logId;
-
-    /**
-     * 关联日志表id.
-     */
-    private Integer lastLogId;
-
-    /**
-     * 检测时间.
-     */
-    private Instant gmtDetect;
-    /**
-     * 上次检测时间.
-     */
-    private Instant gmtLastDetect;
 
     public Integer getEqpId() {
         return eqpId;
@@ -89,37 +69,5 @@ public class EqpDetectDO extends BaseDO {
 
     public void setType(Short type) {
         this.type = type;
-    }
-
-    public Integer getLogId() {
-        return logId;
-    }
-
-    public void setLogId(Integer logId) {
-        this.logId = logId;
-    }
-
-    public Integer getLastLogId() {
-        return lastLogId;
-    }
-
-    public void setLastLogId(Integer lastLogId) {
-        this.lastLogId = lastLogId;
-    }
-
-    public Instant getGmtDetect() {
-        return gmtDetect;
-    }
-
-    public void setGmtDetect(Instant gmtDetect) {
-        this.gmtDetect = gmtDetect;
-    }
-
-    public Instant getGmtLastDetect() {
-        return gmtLastDetect;
-    }
-
-    public void setGmtLastDetect(Instant gmtLastDetect) {
-        this.gmtLastDetect = gmtLastDetect;
     }
 }

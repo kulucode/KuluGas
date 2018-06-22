@@ -1,8 +1,5 @@
 package cn.tpson.kulu.gas.repository;
 
-import cn.tpson.kulu.gas.domain.SysMenuDO;
-import cn.tpson.kulu.gas.dto.Page;
-import cn.tpson.kulu.gas.dto.SysMenuDTO;
 import cn.tpson.kulu.gas.service.SysMenuService;
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
@@ -10,9 +7,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Zhangka in 2018/06/04

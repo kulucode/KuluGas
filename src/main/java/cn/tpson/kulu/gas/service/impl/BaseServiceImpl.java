@@ -1,7 +1,6 @@
 package cn.tpson.kulu.gas.service.impl;
 
-import cn.tpson.kulu.gas.dto.BaseDTO;
-import cn.tpson.kulu.gas.dto.Page;
+import cn.tpson.kulu.gas.dto.TableDTO;
 import cn.tpson.kulu.gas.service.BaseService;
 import cn.tpson.kulu.gas.util.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +45,12 @@ public abstract class BaseServiceImpl<DTO, DO, QUERY> implements BaseService<DTO
         return mapper().updateByPrimaryKey(BeanUtils.copyProperties(getGenericClassForDo(), record));
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int updateByIds(QUERY query) {
+        return mapper().updateByPrimaryKeys(query);
+    }
+
     @Override
     public DTO getById(Integer id) {
         DO record = mapper().selectByPrimaryKey(id);
@@ -75,18 +80,10 @@ public abstract class BaseServiceImpl<DTO, DO, QUERY> implements BaseService<DTO
     }
 
     @Override
-    public Page<DTO> pageByExample(QUERY example) {
-        Page<DTO> page = new Page<>();
-        int totalCount = countByExample(example);
-        if (totalCount == 0) {
-            page.setTotalCount(totalCount);
-            return page;
-        }
-
-        List<DTO> resultList = listByExample(example);
-        page.setResultList(resultList);
-        page.setTotalCount(totalCount);
-        return page;
+    public TableDTO<DTO> pageByExample(QUERY example) {
+        int total = countByExample(example);
+        List<DTO> rows = listByExample(example);
+        return new TableDTO<>(total, rows);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

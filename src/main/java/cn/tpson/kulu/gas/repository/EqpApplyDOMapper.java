@@ -5,6 +5,7 @@ import cn.tpson.kulu.gas.query.EqpApplyQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Zhangka in 2018/06/14
@@ -17,4 +18,11 @@ public interface EqpApplyDOMapper extends BaseMapper<EqpApplyQuery, EqpApplyDO> 
      * @return
      */
     List<EqpApplyDO> selectByUid(Integer uid);
+
+    /**
+     * 插入t_eqp_apply_eqp关系表.
+     * @param params
+     * @return
+     */
+    int insertApplyEqp(Map<String, Integer> params);
 }

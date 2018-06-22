@@ -2,7 +2,9 @@ package cn.tpson.kulu.gas.intercepter;
 
 import cn.tpson.kulu.gas.cache.SysUserCache;
 import cn.tpson.kulu.gas.dto.SysUserDTO;
+import cn.tpson.kulu.gas.exception.AuthRuntimeException;
 import cn.tpson.kulu.gas.util.CookieUtils;
+import cn.tpson.kulu.gas.util.RequestContextUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,19 +24,17 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String sid = CookieUtils.getCookie(request, SysUserDTO.TOKEN_NAME);
+        String sid = RequestContextUtils.getValue(SysUserDTO.SID);
         if (StringUtils.isBlank(sid)) {
-            response.sendRedirect("/login.html");
-            return false;
+            throw new AuthRuntimeException("请登录.");
         }
 
         SysUserDTO sysUserDTO = sysUserCache.get(sid);
         if (sysUserDTO == null) {
-            response.sendRedirect("/login.html");
-            return false;
+            throw new AuthRuntimeException("登录已过期.");
         }
         if (sysUserDTO.getDeleted() || sysUserDTO.getStatus() != SysUserDTO.STATUS_NORMAL) {
-            throw new RuntimeException("账号状态异常.");
+            throw new AuthRuntimeException("账号状态异常.");
         }
 
         return true;

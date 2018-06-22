@@ -1,15 +1,12 @@
-package cn.tpson.kulu.gas.repository;
+package cn.tpson.kulu.gas.service;
 
 import cn.tpson.kulu.gas.dto.EqpApplyDTO;
-import cn.tpson.kulu.gas.service.EqpApplyService;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.Instant;
 
 /**
  * Created by Zhangka in 2018/06/15
