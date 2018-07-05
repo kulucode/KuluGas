@@ -26,6 +26,7 @@ server:
 logging:
   level:
     cn.tpson.kulu.gas: debug
+  path: ${user.home}/logs/gas
 
 
 

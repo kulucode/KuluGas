@@ -50,6 +50,20 @@
             <if test="gmtModified != null">
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
+            <if test="key != null and key != ''">
+                AND
+                (
+                t.username LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR t.nickname LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR t.realname LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                )
+            </if>
+            <if test="st != null">
+                AND t.gmt_create &gt;= #{st,jdbcType=TIMESTAMP}
+            </if>
+            <if test="et != null">
+                AND t.gmt_create &lt;= #{et,jdbcType=TIMESTAMP}
+            </if>
             AND t.is_deleted = false
         </where>
     </sql>
@@ -65,25 +79,25 @@
         ORDER BY t.gmt_modified DESC, t.id DESC
     </sql>
     <!--*******************************************************************************************************************-->
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_user set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_user set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-    </delete>
+    </update>
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_sys_user_id_seq'::regclass)
         </selectKey>
-        insert into t_sys_user (id, username, nickname, realname, password, status, type, gmt_create, gmt_modified,
-        is_deleted)
+        insert into t_sys_user (id, username, nickname, realname, password, status, type, is_deleted, gmt_create,
+        gmt_modified)
         values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR},
         #{realname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT},
-        #{type,jdbcType=SMALLINT}, #{gmtCreate,jdbcType=TIMESTAMP},
-        #{gmtModified,jdbcType=TIMESTAMP}, #{deleted, jdbcType=BIT}
-        )
+        #{type,jdbcType=SMALLINT}, false, now(), now())
     </insert>
+
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.query.SysUserQuery">
         update t_sys_user
         <set>
+            gmt_modified = now(),
             <if test="username != null and username != ''">
                 username = #{username,jdbcType=VARCHAR},
             </if>
@@ -101,12 +115,6 @@
             </if>
             <if test="type != null">
                 type = #{type,jdbcType=SMALLINT},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
             </if>
             <if test="deleted != null">
                 is_deleted = #{deleted, jdbcType=BIT}
@@ -118,6 +126,7 @@
     <update id="updateByPrimaryKeys" parameterType="cn.tpson.kulu.gas.query.SysUserQuery">
         update t_sys_user
         <set>
+            gmt_modified = now(),
             <if test="username != null and username != ''">
                 username = #{username,jdbcType=VARCHAR},
             </if>
@@ -136,19 +145,13 @@
             <if test="type != null">
                 type = #{type,jdbcType=SMALLINT},
             </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-            </if>
             <if test="deleted != null">
                 is_deleted = #{deleted, jdbcType=BIT}
             </if>
         </set>
         where id in
         <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
-          #{item}
+            #{item}
         </foreach>
         AND is_deleted = false
     </update>

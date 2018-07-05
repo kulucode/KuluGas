@@ -45,16 +45,8 @@
             <generatedKey column="id" sqlStatement="SELECT nextval('t_sys_user_building_site_id_seq'::regclass)" type="pre"/>
         </table>
 -->
-        <table tableName="t_eqp" domainObjectName="EqpDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_id_seq'::regclass)" type="pre"/>
-        </table>
-
-        <table tableName="t_eqp_apply" domainObjectName="EqpApplyDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_apply_id_seq'::regclass)" type="pre"/>
-        </table>
-
-        <table tableName="t_eqp_detect" domainObjectName="EqpDetectDO">
-            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_detect_id_seq'::regclass)" type="pre"/>
+        <table tableName="t_eqp_detect_timeout" domainObjectName="EqpDetectTimeoutDO">
+            <generatedKey column="id" sqlStatement="SELECT nextval('t_eqp_detect_timeout_id_seq'::regclass)" type="pre"/>
         </table>
     </context>
 </generatorConfiguration>

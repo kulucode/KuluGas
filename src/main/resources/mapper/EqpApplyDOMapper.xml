@@ -7,8 +7,6 @@
         <result column="phone_no" jdbcType="VARCHAR" property="phoneNo"/>
         <result column="addr" jdbcType="VARCHAR" property="addr"/>
         <result column="location" jdbcType="VARCHAR" property="location"/>
-        <result column="status" jdbcType="SMALLINT" property="status"/>
-        <result column="type" jdbcType="SMALLINT" property="type"/>
         <result column="comment" jdbcType="VARCHAR" property="comment"/>
         <result column="is_deleted" jdbcType="BIT" property="deleted"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
@@ -16,7 +14,7 @@
     </resultMap>
 
     <sql id="fromSql">
-        t.id, t.uid, t.phone_no, t.addr, t.location, t.status, t.type, t.comment, t.is_deleted, t.gmt_create, t.gmt_modified
+        t.id, t.uid, t.phone_no, t.addr, t.location, t.comment, t.is_deleted, t.gmt_create, t.gmt_modified
         from t_eqp_apply t
     </sql>
     <sql id="fromTable">
@@ -39,17 +37,8 @@
             <if test="location != null and location != ''">
                 AND t.location = #{location,jdbcType=VARCHAR}::jsonb
             </if>
-            <if test="status != null">
-                AND t.status = #{status,jdbcType=SMALLINT}
-            </if>
-            <if test="type != null">
-                AND t.type = #{type,jdbcType=SMALLINT}
-            </if>
             <if test="comment != null and comment != ''">
                 AND t.comment = #{comment,jdbcType=VARCHAR}
-            </if>
-            <if test="deleted != null">
-                AND t.is_deleted = #{deleted,jdbcType=BIT}
             </if>
             <if test="gmtCreate != null">
                 AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
@@ -57,6 +46,7 @@
             <if test="gmtModified != null">
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
+            AND t.is_deleted = false
         </where>
     </sql>
     <sql id="pageSql">
@@ -71,26 +61,25 @@
         ORDER BY t.gmt_modified DESC, t.id DESC
     </sql>
     <!--***************************************************************************************-->
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_eqp_apply set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_eqp_apply set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-    </delete>
+    </update>
 
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpApplyDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_eqp_apply_id_seq'::regclass)
         </selectKey>
-        insert into t_eqp_apply (id, uid, phone_no, addr, location, status, type, comment, is_deleted, gmt_create,
+        insert into t_eqp_apply (id, uid, phone_no, addr, location, comment, is_deleted, gmt_create,
         gmt_modified)
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{phoneNo,jdbcType=VARCHAR},
-        #{addr,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}::jsonb, #{status,jdbcType=SMALLINT},
-        #{type,jdbcType=SMALLINT}, #{comment,jdbcType=VARCHAR}, #{deleted,jdbcType=BIT},
-        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+        #{addr,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}::jsonb, #{comment,jdbcType=VARCHAR}, false, now(), now())
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpApplyDO">
         update t_eqp_apply
         <set>
+            gmt_modified = now(),
             <if test="uid != null">
                 uid = #{uid,jdbcType=INTEGER},
             </if>
@@ -106,23 +95,41 @@
             <if test="deleted != null">
                 is_deleted = #{deleted,jdbcType=BIT},
             </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-            </if>
-            <if test="status != null">
-                status = #{status,jdbcType=SMALLINT},
-            </if>
-            <if test="type != null">
-                type = #{type,jdbcType=SMALLINT},
-            </if>
             <if test="comment != null and comment != ''">
                 comment = #{comment,jdbcType=VARCHAR}
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <update id="updateByPrimaryKeys" parameterType="cn.tpson.kulu.gas.query.EqpApplyQuery">
+        update t_eqp_apply
+        <set>
+            gmt_modified = now(),
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="phoneNo != null and phoneNo != ''">
+                phone_no = #{phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="addr != null and addr != ''">
+                addr = #{addr,jdbcType=VARCHAR},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location,jdbcType=VARCHAR}::jsonb,
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+            <if test="comment != null and comment != ''">
+                comment = #{comment,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND is_deleted = false
     </update>
 
     <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -168,7 +175,7 @@
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_eqp_apply_eqp_id_seq'::regclass)
         </selectKey>
-        insert into t_eqp_apply (id, apply_id, eqp_id)
-        values (#{id,jdbcType=INTEGER}, #{apply_id,jdbcType=INTEGER}, #{eqp_id,jdbcType=INTEGER})
+        insert into t_eqp_apply_eqp (id, apply_id, eqp_id)
+        values (#{id,jdbcType=INTEGER}, #{applyId,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER})
     </insert>
 </mapper>

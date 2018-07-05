@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * Created by Zhangka in 2018/06/13
  */
 @Service
-public class RedisServiceImpl implements RedisService<SysUserDTO> {
+public class SysUserRedisServiceImpl implements RedisService<SysUserDTO> {
     @Autowired
     private RedisTemplate<String, SysUserDTO> redisTemplate;
 

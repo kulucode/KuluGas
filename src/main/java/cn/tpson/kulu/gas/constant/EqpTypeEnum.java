@@ -1,5 +1,7 @@
 package cn.tpson.kulu.gas.constant;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Objects;
 
 /**
@@ -83,6 +85,9 @@ public enum EqpTypeEnum {
     }
 
     public static Short typeOf(String name) {
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
         if (EQP_TYPE_1.name.contains(name)) {
             return EQP_TYPE_1.type;
         } else if (EQP_TYPE_2.name.contains(name)) {

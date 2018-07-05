@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.EqpOnlineLogDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpOnlineLogDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="eqp_id" jdbcType="INTEGER" property="eqpId"/>
+        <result column="lat" jdbcType="NUMERIC" property="lat"/>
+        <result column="lon" jdbcType="NUMERIC" property="lon"/>
+        <result column="is_online" jdbcType="BIT" property="online"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_eqp_online_log set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpOnlineLogDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_eqp_online_log_id_seq'::regclass)
+        </selectKey>
+        insert into t_eqp_online_log (id, eqp_id, lat,
+        lon, is_online, is_deleted, gmt_create,
+        gmt_modified)
+        values (#{id,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{lat,jdbcType=NUMERIC},
+        #{lon,jdbcType=NUMERIC}, #{online,jdbcType=BIT}, false, now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpOnlineLogDO">
+    update t_eqp_online_log
+    <set>
+        gmt_modified = now(),
+        <if test="eqpId != null">
+            eqp_id = #{eqpId,jdbcType=INTEGER},
+        </if>
+        <if test="lat != null">
+            lat = #{lat,jdbcType=NUMERIC},
+        </if>
+        <if test="lon != null">
+            lon = #{lon,jdbcType=NUMERIC},
+        </if>
+        <if test="online != null">
+            is_online = #{online,jdbcType=BIT},
+        </if>
+        <if test="deleted != null">
+            is_deleted = #{deleted,jdbcType=BIT}
+        </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, eqp_id, lat, lon, is_online, is_deleted, gmt_create, gmt_modified
+    from t_eqp_online_log
+    where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, eqp_id, lat, lon, is_online, is_deleted, gmt_create, gmt_modified
+    from t_eqp_online_log
+    where is_deleted = false
+  </select>
+
+    <select id="getWorkingHoursByEqpId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select ((logout - login) / 3600)::int4 from
+        (
+        select sum(extract(epoch from gmt_create)) as logout from t_eqp_online_log where eqp_id = #{eqpId} AND is_online = false AND is_deleted = false
+        )t1,
+        (
+        select sum(extract(epoch from gmt_create)) as login from t_eqp_online_log where eqp_id = #{eqpId} AND is_online = true AND is_deleted = false
+        )t2
+    </select>
+
+    <select id="getWorkingHoursByEqpIdAndGmtCreate" resultType="java.lang.Integer">
+        select ((logout - login) / 3600)::int4 from
+        (
+        select sum(extract(epoch from gmt_create)) as logout from t_eqp_online_log where eqp_id = #{eqpId} AND is_online = false AND gmt_create &gt; #{gmtCreate} AND is_deleted = false
+        )t1,
+        (
+        select sum(extract(epoch from gmt_create)) as login from t_eqp_online_log where eqp_id = #{eqpId} AND is_online = true AND gmt_create &gt; #{gmtCreate} AND is_deleted = false
+        )t2
+    </select>
+</mapper>

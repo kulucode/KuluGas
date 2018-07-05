@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * Created by Zhangka in 2018/06/14
@@ -23,7 +24,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     private SysUserCache sysUserCache;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String sid = RequestContextUtils.getValue(SysUserDTO.SID);
         if (StringUtils.isBlank(sid)) {
             throw new AuthRuntimeException("请登录.");
@@ -33,7 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (sysUserDTO == null) {
             throw new AuthRuntimeException("登录已过期.");
         }
-        if (sysUserDTO.getDeleted() || sysUserDTO.getStatus() != SysUserDTO.STATUS_NORMAL) {
+        if (sysUserDTO.getDeleted() || !Objects.equals(SysUserDTO.STATUS_NORMAL, sysUserDTO.getStatus())) {
             throw new AuthRuntimeException("账号状态异常.");
         }
 

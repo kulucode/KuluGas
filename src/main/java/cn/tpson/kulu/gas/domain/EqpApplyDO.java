@@ -25,16 +25,6 @@ public class EqpApplyDO extends BaseDO {
     private String location;
 
     /**
-     * 状态，0：正常；1：待审核；2：拒绝
-     */
-    private Short status;
-
-    /**
-     * 类型，1：装机；2：拆机；
-     */
-    private Short type;
-
-    /**
      * 备注.
      */
     private String comment;
@@ -69,22 +59,6 @@ public class EqpApplyDO extends BaseDO {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public Short getType() {
-        return type;
-    }
-
-    public void setType(Short type) {
-        this.type = type;
     }
 
     public String getComment() {

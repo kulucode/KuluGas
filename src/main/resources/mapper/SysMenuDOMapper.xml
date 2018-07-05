@@ -54,9 +54,7 @@
             <if test="gmtModified != null">
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
-            <if test="deleted != null">
-                AND t.is_deleted = #{deleted,jdbcType=BIT}
-            </if>
+            AND t.is_deleted = false
         </where>
     </sql>
     <sql id="pageSql">
@@ -71,26 +69,26 @@
         ORDER BY t.gmt_modified DESC, t.id DESC
     </sql>
     <!--***************************************************************************************-->
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_menu set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_menu set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-    </delete>
+    </update>
 
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysMenuDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_sys_menu_id_seq'::regclass)
         </selectKey>
         insert into t_sys_menu (id, pid, text,
-        alias_text, uri, "order", "type", icon, gmt_create, gmt_modified, is_deleted)
+        alias_text, uri, "order", "type", icon, is_deleted, gmt_create, gmt_modified)
         values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{text,jdbcType=VARCHAR},
         #{aliasText,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{order,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT},
-        #{icon,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP},
-        #{deleted, jdbcType=BIT})
+        #{icon,jdbcType=VARCHAR}, false, now(), now())
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysMenuDO">
         update t_sys_menu
         <set>
+            gmt_modified = now(),
             <if test="pid != null">
                 pid = #{pid,jdbcType=INTEGER},
             </if>
@@ -111,12 +109,6 @@
             </if>
             <if test="icon != null and icon != ''">
                 icon = #{icon,jdbcType=VARCHAR},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
             </if>
             <if test="deleted != null">
                 is_deleted = #{deleted, jdbcType=BIT}

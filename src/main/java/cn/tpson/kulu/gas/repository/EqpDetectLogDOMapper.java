@@ -19,6 +19,13 @@ public interface EqpDetectLogDOMapper extends BaseMapper<EqpDetectLogQuery, EqpD
     List<EqpDetectLogDO> selectByEqpId(Integer eqpId);
 
     /**
+     * 根据设备id查询单挑检测记录.
+     * @param eqpId
+     * @return
+     */
+    EqpDetectLogDO selectOneByEqpId(Integer eqpId);
+
+    /**
      * 模糊搜索.
      * @param query.key
      * @return

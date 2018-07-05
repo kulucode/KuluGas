@@ -1,9 +1,9 @@
 package cn.tpson.kulu.gas.controller;
 
 import cn.tpson.kulu.gas.cache.SysUserCache;
-import cn.tpson.kulu.gas.dto.SysUserBuildingSiteDTO;
-import cn.tpson.kulu.gas.dto.SysUserDTO;
-import cn.tpson.kulu.gas.dto.SysUserPersonalDTO;
+import cn.tpson.kulu.gas.constant.ErrorCodeEnum;
+import cn.tpson.kulu.gas.constant.UserTypeEnum;
+import cn.tpson.kulu.gas.dto.*;
 import cn.tpson.kulu.gas.exception.ParamRuntimeException;
 import cn.tpson.kulu.gas.query.SysUserQuery;
 import cn.tpson.kulu.gas.service.SysUserService;
@@ -14,15 +14,16 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Zhangka in 2018/06/08
@@ -53,7 +54,7 @@ public class UserController extends BaseController {
         Instant now = Instant.now();
         sysUserDTO.setGmtCreate(now);
         sysUserDTO.setStatus(SysUserDTO.STATUS_WAITING);
-        sysUserDTO.setType(SysUserDTO.TYPE_PER);
+        sysUserDTO.setType(UserTypeEnum.USER_PER.getType());
         sysUserDTO.setDeleted(Boolean.FALSE);
 
         sysUserPersonalDTO.setGmtCreate(now);
@@ -76,7 +77,7 @@ public class UserController extends BaseController {
         Instant now = Instant.now();
         sysUserDTO.setGmtCreate(now);
         sysUserDTO.setStatus(SysUserDTO.STATUS_WAITING);
-        sysUserDTO.setType(SysUserDTO.TYPE_BUI);
+        sysUserDTO.setType(UserTypeEnum.USER_BUI.getType());
         sysUserDTO.setDeleted(Boolean.FALSE);
 
         sysUserBuildingSiteDTO.setGmtCreate(now);
@@ -102,8 +103,10 @@ public class UserController extends BaseController {
             return ResultVO.failResult("用户不存在.");
         if (!password.equalsIgnoreCase(sysUserDTO.getPassword()))
             return ResultVO.failResult("密码错误.");
-        if (SysUserDTO.STATUS_WAITING == sysUserDTO.getStatus())
+        if (Objects.equals(SysUserDTO.STATUS_WAITING, sysUserDTO.getStatus()))
             return ResultVO.failResult("账户正在审核中.");
+        if (Objects.equals(SysUserDTO.STATUS_REFUSE, sysUserDTO.getStatus()))
+            return ResultVO.failResult("账户审核被拒绝.");
 
         String sid = getSid();
         if (StringUtils.isNotBlank(sid)) {
@@ -137,16 +140,42 @@ public class UserController extends BaseController {
      * @return
      */
     @GetMapping("/detail")
-    public ResultVO detail() {
-        SysUserDTO sysUserDTO = getUser();
-        Short type = sysUserDTO.getType();
-        if (type != null && type == SysUserDTO.TYPE_BUI) {
-            sysUserService.initBuildingSite(sysUserDTO);
-        } else if (type != null && type == SysUserDTO.TYPE_PER) {
-            sysUserService.initPersonal(sysUserDTO);
+    public ResultVO detail(Integer uid) {
+        SysUserDTO user = sysUserService.getById(uid);
+        CheckUtils.checkNull(user, ErrorCodeEnum.USER_NOT_FOUND);
+
+        Short type = user.getType();
+        if (Objects.equals(UserTypeEnum.USER_BUI.getType(), type)) {
+            sysUserService.initBuildingSite(user);
+        } else if (Objects.equals(UserTypeEnum.USER_PER.getType(), type)) {
+            sysUserService.initPersonal(user);
         }
 
-        return ResultVO.successResult(sysUserDTO);
+        return ResultVO.successResult(user);
+    }
+
+    /**
+     * 分页查询.
+     * @param query
+     * @param st
+     * @param et
+     * @return
+     */
+    @GetMapping("/page")
+    public ResultVO page(SysUserQuery query) {
+        query.setType(UserTypeEnum.typeOf(query.getKey()));
+        query.setDeleted(Boolean.FALSE);
+        TableDTO<SysUserDTO> tableDTO = sysUserService.pageByExample(query);
+        List<SysUserDTO> rows = tableDTO.getRows();
+        rows.forEach(row -> {
+            sysUserService.initPersonal(row);
+            sysUserService.initBuildingSite(row);
+        });
+
+        Page<SysUserDTO> page = new Page<>(query.getOffset(), query.getLimit());
+        page.setTotalRow(tableDTO.getTotal());
+        page.setList(rows);
+        return ResultVO.successResult(page);
     }
 
     /**
@@ -154,14 +183,9 @@ public class UserController extends BaseController {
      * @param ids
      * @return
      */
-    @PostMapping("/approve")
-    public ResultVO approve(Integer[] ids) {
-        CheckUtils.checkPermission(getUser().getType(), SysUserDTO.TYPE_SER);
-        SysUserQuery sysUserQuery = new SysUserQuery();
-        sysUserQuery.setType(SysUserDTO.STATUS_NORMAL);
-        sysUserQuery.setIds(ids);
-
-        int count = sysUserService.updateByIds(sysUserQuery);
+    @PostMapping("/status/approve")
+    public ResultVO approve(@RequestBody IdsDTO ids) {
+        int count = status(ids.getIds(), SysUserDTO.STATUS_NORMAL);
         return  ResultVO.successResult(count);
     }
 
@@ -170,14 +194,31 @@ public class UserController extends BaseController {
      * @param ids
      * @return
      */
-    @PostMapping("/refuse")
-    public ResultVO refuse(Integer[] ids) {
-        CheckUtils.checkPermission(getUser().getType(), SysUserDTO.TYPE_SER);
-        SysUserQuery sysUserQuery = new SysUserQuery();
-        sysUserQuery.setType(SysUserDTO.STATUS_REFUSED);
-        sysUserQuery.setIds(ids);
-
-        int count = sysUserService.updateByIds(sysUserQuery);
+    @PostMapping("/status/refuse")
+    public ResultVO refuse(@RequestBody IdsDTO ids) {
+        int count = status(ids.getIds(), SysUserDTO.STATUS_REFUSE);
         return  ResultVO.successResult(count);
+    }
+
+    /**
+     *  重审.
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/back")
+    public ResultVO back(@RequestBody IdsDTO ids) {
+        int count = status(ids.getIds(), SysUserDTO.STATUS_WAITING);
+        return  ResultVO.successResult(count);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+    protected int status(Integer[] ids, Short status) {
+        SysUserQuery sysUserQuery = new SysUserQuery();
+        sysUserQuery.setStatus(status);
+        sysUserQuery.setIds(ids);
+        sysUserQuery.setGmtModified(Instant.now());
+
+        return sysUserService.updateByIds(sysUserQuery);
     }
 }

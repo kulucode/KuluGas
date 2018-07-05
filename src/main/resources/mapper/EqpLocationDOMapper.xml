@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.EqpLocationDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpLocationDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="eqp_id" jdbcType="INTEGER" property="eqpId"/>
+        <result column="location" jdbcType="OTHER" property="location"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_eqp_location set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpLocationDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_eqp_location_id_seq'::regclass)
+        </selectKey>
+        insert into t_eqp_location (id, eqp_id, location,
+        is_deleted, gmt_create, gmt_modified
+        )
+        values (#{id,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{location,jdbcType=OTHER}::jsonb, false ,now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpLocationDO">
+        update t_eqp_location
+        <set>
+            gmt_modified = now(),
+            <if test="eqpId != null">
+                eqp_id = #{eqpId,jdbcType=INTEGER},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location,jdbcType=OTHER}::jsonb,
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, eqp_id, location, is_deleted, gmt_create, gmt_modified
+    from t_eqp_location
+    where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, eqp_id, location, is_deleted, gmt_create, gmt_modified
+    from t_eqp_location
+    where is_deleted = false
+  </select>
+
+    <update id="addLocation" parameterType="cn.tpson.kulu.gas.dto.EqpLocationDTO">
+        update t_eqp_location set location = location || #{location, jdbcType=VARCHAR}::jsonb
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <select id="getId" parameterType="cn.tpson.kulu.gas.query.EqpLocationQuery" resultType="java.lang.Integer">
+        select id from t_eqp_location
+        where eqp_id = #{eqpId, jdbcType=INTEGER}
+        AND to_char(gmt_create, 'YYYY-MM-DD') = #{queryDay, jdbcType=VARCHAR}
+        AND is_deleted = false
+    </select>
+</mapper>

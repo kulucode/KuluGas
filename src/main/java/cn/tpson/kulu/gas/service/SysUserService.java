@@ -20,4 +20,10 @@ public interface SysUserService extends BaseService<SysUserDTO, SysUserDO, SysUs
     void init(SysUserDTO sysUserDTO);
 
     SysUserDTO getByUsername(String username);
+
+    SysUserBuildingSiteDTO getBuildingSiteByUid(Integer uid);
+
+    SysUserBuildingSiteDTO getBuildingSiteById(Integer uid);
+
+    SysUserPersonalDTO getPersonal(Integer uid);
 }

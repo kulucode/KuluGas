@@ -9,4 +9,6 @@ import cn.tpson.kulu.gas.query.EqpApplyQuery;
  */
 public interface EqpApplyService extends BaseService<EqpApplyDTO, EqpApplyDO, EqpApplyQuery> {
     EqpApplyDTO getByUid(Integer uid);
+
+    int apply(EqpApplyDTO eqpApplyDTO, Short status);
 }

@@ -40,6 +40,27 @@ public class EqpDO extends BaseDO {
      */
     private Integer uid;
 
+    /**
+     * 状态.
+     * @see cn.tpson.kulu.gas.constant.EqpStatusEnum
+     */
+    private Short status;
+
+    /**
+     * 所属工地名称.
+     */
+    private String bsName;
+
+    /**
+     * 所属工地id.
+     */
+    private Integer bsId;
+
+    /**
+     * 排放等级
+     */
+    private String disLevel;
+
     public String getEqpNo() {
         return eqpNo;
     }
@@ -94,5 +115,37 @@ public class EqpDO extends BaseDO {
 
     public void setUid(Integer uid) {
         this.uid = uid;
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
+    }
+
+    public String getBsName() {
+        return bsName;
+    }
+
+    public void setBsName(String bsName) {
+        this.bsName = bsName;
+    }
+
+    public Integer getBsId() {
+        return bsId;
+    }
+
+    public void setBsId(Integer bsId) {
+        this.bsId = bsId;
+    }
+
+    public String getDisLevel() {
+        return disLevel;
+    }
+
+    public void setDisLevel(String disLevel) {
+        this.disLevel = disLevel;
     }
 }

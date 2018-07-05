@@ -1,8 +1,10 @@
 package cn.tpson.kulu.gas.service;
 
+import cn.tpson.kulu.gas.dto.SysUserDTO;
 import cn.tpson.kulu.gas.dto.TableDTO;
 import cn.tpson.kulu.gas.repository.BaseMapper;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -30,4 +32,8 @@ public interface BaseService<DTO, DO, QUERY> {
     int countByExample(QUERY example);
 
     TableDTO<DTO> pageByExample(QUERY example);
+
+    int createBlockChain(DTO record, Short source, String contentCreator, Instant gmtContentModified, Integer sid);
+
+    SysUserDTO getUser();
 }

@@ -27,13 +27,13 @@ public class RequestContextUtils {
 
     public static String getValue(String name) {
         HttpServletRequest request = getRequest();
-		String value = CookieUtils.getCookie(request, name);
+		String value = request.getHeader(name);
 
 		if (StringUtils.isBlank(value)) {
 			value = request.getParameter(name);
 		}
 		if (StringUtils.isBlank(value)) {
-			value = request.getHeader(name);
+			value = CookieUtils.getCookie(request, name);
 		}
 
 		return value;

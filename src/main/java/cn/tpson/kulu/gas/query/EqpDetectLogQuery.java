@@ -5,18 +5,6 @@ import java.time.LocalDateTime;
 
 public class EqpDetectLogQuery extends BaseQuery {
     /**
-     * 搜索来源表格.
-     * 1：施工单位进场申请；2：施工单位定期检测；3：施工单位设备台账；4：服务公司进场记录；5：服务公司日常检测；6:服务公司设备台账；7：政府部门设备台账；8：政府部门进场审核；
-     */
-    public static int SOURCE_1 = 1;
-    public static int SOURCE_2 = 2;
-    public static int SOURCE_3 = 3;
-    public static int SOURCE_4 = 4;
-    public static int SOURCE_5 = 5;
-    public static int SOURCE_6 = 6;
-    public static int SOURCE_7 = 7;
-    public static int SOURCE_8 = 8;
-    /**
      * 设备id.--> t_eqp.
      */
     private Integer eqpId;
@@ -41,9 +29,14 @@ public class EqpDetectLogQuery extends BaseQuery {
      */
     private Short type;
 
-
-    /////////////////////////////////////////////////////////////////////////////
+    /**
+     * 检测人.
+     */
     private Integer uid;
+
+    private Double lat;
+    private Double lon;
+    /////////////////////////////////////////////////////////////////////////////
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String key;     // 搜索关键字
@@ -127,5 +120,21 @@ public class EqpDetectLogQuery extends BaseQuery {
 
     public void setEqpType(Short eqpType) {
         this.eqpType = eqpType;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }

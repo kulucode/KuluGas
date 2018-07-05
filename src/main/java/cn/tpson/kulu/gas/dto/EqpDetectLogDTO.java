@@ -40,11 +40,21 @@ public class EqpDetectLogDTO extends BaseDTO {
      */
     private Short type;
 
+    /**
+     * 检测人.
+     */
+    private Integer uid;
+
+    private Double lat;
+    private Double lon;
+
     ////////////////////////////////////////////////////////////
     /**
      * 被检测设备.
      */
     private EqpDTO eqp;
+
+    private SysUserDTO user;
 
     public EqpDetectLogDTO() {}
 
@@ -98,5 +108,37 @@ public class EqpDetectLogDTO extends BaseDTO {
 
     public void setEqp(EqpDTO eqp) {
         this.eqp = eqp;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public SysUserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(SysUserDTO user) {
+        this.user = user;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }

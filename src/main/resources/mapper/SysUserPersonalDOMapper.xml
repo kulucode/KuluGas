@@ -14,7 +14,7 @@
     </resultMap>
 
     <sql id="fromSql">
-        t.id, t.uid, t.id_card, t.phone_no, t.id_card_front_pic, t.id_card_back_pic, t.gmt_create, t.gmt_modified, t.is_deleted
+        t.id, t.uid, t.id_card, t.phone_no, t.id_card_front_pic, t.id_card_back_pic, t.is_deleted, t.gmt_create, t.gmt_modified
         from t_sys_user_personal t
     </sql>
     <sql id="fromTable">
@@ -62,28 +62,27 @@
     </sql>
     <!--***************************************************************************************-->
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_user_personal set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_user_personal set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-  </delete>
+  </update>
 
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_sys_user_personal_id_seq'::regclass)
         </selectKey>
         insert into t_sys_user_personal (id, uid, id_card,
-        phone_no, id_card_front_pic, id_card_back_pic,
-        gmt_create, gmt_modified, is_deleted
-        )
+        phone_no, id_card_front_pic, id_card_back_pic, is_deleted,
+        gmt_create, gmt_modified)
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{idCard,jdbcType=VARCHAR},
         #{phoneNo,jdbcType=VARCHAR}, #{idCardFrontPic,jdbcType=VARCHAR}, #{idCardBackPic,jdbcType=VARCHAR},
-        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
-        )
+        false, now(), now())
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserPersonalDO">
         update t_sys_user_personal
         <set>
+            gmt_modified = now(),
             <if test="uid != null">
                 uid = #{uid,jdbcType=INTEGER},
             </if>
@@ -98,12 +97,6 @@
             </if>
             <if test="idCardBackPic != null and idCardBackPic != ''">
                 id_card_back_pic = #{idCardBackPic,jdbcType=VARCHAR},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
             </if>
             <if test="deleted != null">
                 is_deleted = #{deleted,jdbcType=BIT}

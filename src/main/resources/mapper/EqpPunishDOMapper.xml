@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.EqpPunishDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpPunishDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="punish_no" jdbcType="VARCHAR" property="punishNo"/>
+        <result column="bs_id" jdbcType="INTEGER" property="bsId"/>
+        <result column="phone_no" jdbcType="VARCHAR" property="phoneNo"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="eqp_no" jdbcType="VARCHAR" property="eqpNo"/>
+        <result column="detect_no" jdbcType="VARCHAR" property="detectNo"/>
+        <result column="lat" jdbcType="DOUBLE" property="lat"/>
+        <result column="lon" jdbcType="DOUBLE" property="lon"/>
+        <result column="amount" jdbcType="NUMERIC" property="amount"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="bs_username" jdbcType="VARCHAR" property="bsUsername"/>
+        <result column="gmt_repair" jdbcType="TIMESTAMP" property="gmtRepair"/>
+        <result column="detect_value" jdbcType="DOUBLE" property="detectValue"/>
+        <result column="type" jdbcType="SMALLINT" property="type"/>
+        <result column="bs_name" jdbcType="VARCHAR" property="bsName"/>
+    </resultMap>
+
+    <sql id="fromSql">
+        t.id, t.punish_no, t.bs_id, t.phone_no, t.uid, t.eqp_id, t.eqp_no, t.detect_no, t.lat, t.lon, t.amount,
+        t.username, t.bs_username, t.gmt_repair, t.detect_value, t.type, t.bs_name, t.status, t.is_deleted, t.gmt_create, t.gmt_modified
+        from t_eqp_punish t
+    </sql>
+    <sql id="fromTable">
+        from t_eqp_punish t
+    </sql>
+    <sql id="whereSql">
+        <where>
+            <if test="id != null">
+                AND t.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="punishNo != null and punishNo != ''">
+                AND t.punish_no = #{punishNo,jdbcType=VARCHAR}
+            </if>
+            <if test="bsId != null">
+                AND t.bs_id = #{bsId,jdbcType=INTEGER}
+            </if>
+            <if test="phoneNo != null and phoneNo != ''">
+                AND t.phone_no = #{phoneNo,jdbcType=VARCHAR}
+            </if>
+            <if test="uid != null">
+                AND t.uid = #{uid,jdbcType=INTEGER}
+            </if>
+            <if test="eqpId != null">
+                AND t.eqp_id = #{eqpId,jdbcType=INTEGER}
+            </if>
+            <if test="eqpNo != null and eqpNo != ''">
+                AND t.eqp_no = #{eqpNo,jdbcType=VARCHAR}
+            </if>
+            <if test="detectNo != null and detectNo != ''">
+                AND t.detect_no = #{detectNo,jdbcType=VARCHAR}
+            </if>
+            <if test="lat != null">
+                AND t.lat = #{lat,jdbcType=DOUBLE}
+            </if>
+            <if test="lon != null">
+                AND t.lon = #{lon,jdbcType=DOUBLE}
+            </if>
+            <if test="amount != null">
+                AND t.amount = #{amount,jdbcType=NUMERIC}
+            </if>
+            <if test="username != null and username != ''">
+                AND t.username = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="bsUsername != null and bsUsername != ''">
+                AND t.bs_username = #{bsUsername,jdbcType=VARCHAR}
+            </if>
+            <if test="gmtRepair != null">
+                AND t.gmt_repair = #{gmtRepair,jdbcType=TIMESTAMP}
+            </if>
+            <if test="detectValue != null">
+                AND t.detect_value = #{detectValue,jdbcType=DOUBLE}
+            </if>
+            <if test="type != null">
+                AND t.type = #{type,jdbcType=INTEGER}
+            </if>
+            <if test="bsName != null and bsName != ''">
+                AND t.bs_name = #{bsName,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND t.status = #{status,jdbcType=SMALLINT}
+            </if>
+            <if test="st != null">
+                AND t.gmt_create &gt;= #{st,jdbcType=TIMESTAMP}
+            </if>
+            <if test="et != null">
+                AND t.gmt_create &lt;= #{et,jdbcType=TIMESTAMP}
+            </if>
+            <if test="key != null and key != ''">
+                AND
+                (
+                t.eqp_no LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR t.bs_name LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR t.detect_no LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR eqp.owner_name LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR eqp.data_plate LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                <if test="eqpType != null">
+                    OR eqp.type = #{eqpType, jdbcType=SMALLINT}
+                </if>
+                )
+            </if>
+            AND t.is_deleted = false
+        </where>
+    </sql>
+    <sql id="pageSql">
+        <if test="offset != null">
+            OFFSET #{offset,jdbcType=INTEGER}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit,jdbcType=INTEGER}
+        </if>
+    </sql>
+    <sql id="orderSql">
+        ORDER BY t.gmt_modified DESC, t.id DESC
+    </sql>
+    <!--******************************************************************************************************-->
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_eqp_punish set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpPunishDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_eqp_punish_id_seq'::regclass)
+        </selectKey>
+        insert into t_eqp_punish (id, punish_no, bs_id, phone_no, uid, eqp_id, eqp_no,
+        detect_no, lat, lon, amount, username, bs_username, gmt_repair, detect_value, type, bs_name, status,
+        is_deleted, gmt_create, gmt_modified
+        )
+        values (#{id,jdbcType=INTEGER}, #{punishNo,jdbcType=VARCHAR}, #{bsId,jdbcType=INTEGER},
+        #{phoneNo,jdbcType=VARCHAR}, #{uid,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{eqpNo,jdbcType=VARCHAR},
+        #{detectNo,jdbcType=VARCHAR}, #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{amount,jdbcType=NUMERIC},
+        #{username,jdbcType=VARCHAR}, #{bsUsername,jdbcType=VARCHAR}, #{gmtRepair,jdbcType=TIMESTAMP},
+        #{detectValue,jdbcType=DOUBLE}, #{type,jdbcType=SMALLINT}, #{bsName, jdbcType=VARCHAR}, #{status, jdbcType=SMALLINT},
+        false, now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpPunishDO">
+        update t_eqp_punish
+        <set>
+            gmt_modified = now(),
+            <if test="punishNo != null and punishNo != ''">
+                punish_no = #{punishNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bsId != null">
+                bs_id = #{bsId,jdbcType=INTEGER},
+            </if>
+            <if test="phone_no != null and phone_no != ''">
+                phone_no = #{phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="eqpId != null">
+                eqp_id = #{eqpId,jdbcType=INTEGER},
+            </if>
+            <if test="eqpNo != null and eqpNo != ''">
+                eqp_no = #{eqpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="detectNo != null and detectNo != ''">
+                detect_no = #{detectNo,jdbcType=VARCHAR},
+            </if>
+            <if test="lat != null">
+                lat = #{lat,jdbcType=DOUBLE},
+            </if>
+            <if test="lon != null">
+                lon = #{lon,jdbcType=DOUBLE},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=NUMERIC},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="bsUsername != null and bsUsername != ''">
+                bs_username = #{bsUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtRepair != null">
+                gmt_repair = #{gmtRepair,jdbcType=TIMESTAMP},
+            </if>
+            <if test="detectValue != null">
+                detect_value = #{detectValue,jdbcType=DOUBLE},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=SMALLINT},
+            </if>
+            <if test="bsName != null and bsName != ''">
+                bs_name = #{bsName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <update id="updateByPrimaryKeys" parameterType="cn.tpson.kulu.gas.query.EqpQuery">
+        update t_eqp_punish
+        <set>
+            gmt_modified = now(),
+            <if test="punishNo != null and punishNo != ''">
+                punish_no = #{punishNo,jdbcType=VARCHAR},
+            </if>
+            <if test="bsId != null">
+                bs_id = #{bsId,jdbcType=INTEGER},
+            </if>
+            <if test="phone_no != null and phone_no != ''">
+                phone_no = #{phoneNo,jdbcType=VARCHAR},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="eqpId != null">
+                eqp_id = #{eqpId,jdbcType=INTEGER},
+            </if>
+            <if test="eqpNo != null and eqpNo != ''">
+                eqp_no = #{eqpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="detectNo != null and detectNo != ''">
+                detect_no = #{detectNo,jdbcType=VARCHAR},
+            </if>
+            <if test="lat != null">
+                lat = #{lat,jdbcType=DOUBLE},
+            </if>
+            <if test="lon != null">
+                lon = #{lon,jdbcType=DOUBLE},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=NUMERIC},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="bsUsername != null and bsUsername != ''">
+                bs_username = #{bsUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtRepair != null">
+                gmt_repair = #{gmtRepair,jdbcType=TIMESTAMP},
+            </if>
+            <if test="detectValue != null">
+                detect_value = #{detectValue,jdbcType=DOUBLE},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=SMALLINT},
+            </if>
+            <if test="bsName != null and bsName != ''">
+                bs_name = #{bsName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+
+        </set>
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND is_deleted = false
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where is_deleted = false
+  </select>
+
+    <select id="getPunishNumber" resultType="java.lang.Integer">
+        SELECT nextval('punish_number_seq'::regclass)
+    </select>
+
+    <select id="getPunishCountByEqpNo" parameterType="cn.tpson.kulu.gas.query.EqpPunishQuery" resultType="java.lang.Integer">
+        SELECT count(*) from t_eqp_punish where eqp_no = #{eqpNo} and to_char(gmt_create, 'yyyy')::int2 = #{year} and is_deleted = false
+    </select>
+
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.EqpPunishQuery" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        <if test="key != null and key != ''">
+            LEFT JOIN t_eqp eqp on eqp.eqp_no = t.eqp_no AND eqp.is_deleted = false
+        </if>
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+        <include refid="pageSql"/>
+    </select>
+
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.EqpPunishQuery" resultType="Integer">
+        select count(t.*)
+        <include refid="fromTable"/>
+        <include refid="whereSql"/>
+    </select>
+</mapper>

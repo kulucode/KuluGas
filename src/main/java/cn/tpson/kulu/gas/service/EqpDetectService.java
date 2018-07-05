@@ -14,12 +14,16 @@ import java.util.List;
 public interface EqpDetectService extends BaseService<EqpDetectDTO, EqpDetectDO, EqpDetectQuery> {
     List<EqpDetectDTO> getByEqpId(Integer eqpId);
 
+    EqpDetectDTO getOneByEqpId(Integer eqpId);
+
+    Double getDetectValueByEqpId(Integer eqpId);
+
     /**
      * 添加检测记录.
-     * @param eqpDetectDTO
+     * @param
      * @return
      */
-    int add(Integer eqpId, String detectValue, String detectNo, Short type);
+    int add(Integer eqpId, String detectValue, String detectNo, Short type, Double lat, Double lon);
 
     /**
      * 模糊搜索.
@@ -36,4 +40,6 @@ public interface EqpDetectService extends BaseService<EqpDetectDTO, EqpDetectDO,
     Integer countBySearch(EqpDetectQuery query);
 
     void initEqp(EqpDetectDTO eqpDetectDTO);
+
+    void initUser(EqpDetectDTO eqpDetectDTO);
 }

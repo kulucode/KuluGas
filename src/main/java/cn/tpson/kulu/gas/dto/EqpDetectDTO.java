@@ -44,6 +44,11 @@ public class EqpDetectDTO extends BaseDTO {
     private Short type;
 
     /**
+     * 检测人.
+     */
+    private Integer uid;
+
+    /**
      * 关联日志表id.
      */
     private Integer logId;
@@ -64,11 +69,18 @@ public class EqpDetectDTO extends BaseDTO {
     @JsonSerialize(using = InstantSerializer.class)
     private Instant gmtLastDetect;
 
+    private Double lat;
+    private Double lon;
+
     ////////////////////////////////////////////////////////////
     /**
      * 被检测设备.
      */
     private EqpDTO eqp;
+
+    private SysUserDTO user;
+
+    private Integer[] ids;
 
     public EqpDetectDTO() {}
 
@@ -154,5 +166,45 @@ public class EqpDetectDTO extends BaseDTO {
 
     public void setGmtLastDetect(Instant gmtLastDetect) {
         this.gmtLastDetect = gmtLastDetect;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public SysUserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(SysUserDTO user) {
+        this.user = user;
+    }
+
+    public Integer[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Integer[] ids) {
+        this.ids = ids;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }

@@ -68,15 +68,13 @@
             <if test="gmtModified != null">
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
-            <if test="deleted != null">
-                AND t.is_deleted = #{deleted,jdbcType=BIT}
-            </if>
             <if test="location != null and location != ''">
                 AND t.location = #{location,jdbcType=VARCHAR}::jsonb
             </if>
             <if test="taxId != null and taxId != ''">
                 AND t.tax_id = #{taxId,jdbcType=VARCHAR}
             </if>
+            AND t.is_deleted = false
         </where>
     </sql>
     <sql id="pageSql">
@@ -92,10 +90,10 @@
     </sql>
     <!--***************************************************************************************-->
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_user_building_site set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_user_building_site set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-  </delete>
+  </update>
 
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysUserBuildingSiteDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
@@ -104,19 +102,19 @@
         insert into t_sys_user_building_site (id, uid, name,
         proj_name, pm, proj_addr,
         contact_person, phone_no, licence_no,
-        licence_pic, busi_licence_pic, gmt_create,
-        gmt_modified, is_deleted, location, tax_id)
+        licence_pic, busi_licence_pic, location, tax_id, is_deleted, gmt_create,
+        gmt_modified)
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
         #{projName,jdbcType=VARCHAR}, #{pm,jdbcType=VARCHAR}, #{projAddr,jdbcType=VARCHAR},
         #{contactPerson,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR}, #{licenceNo,jdbcType=VARCHAR},
-        #{licencePic,jdbcType=VARCHAR}, #{busiLicencePic,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP},
-        #{gmtModified,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, #{location,jdbcType=VARCHAR}::jsonb,
-        #{taxId,jdbcType=VARCHAR})
+        #{licencePic,jdbcType=VARCHAR}, #{busiLicencePic,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}::jsonb,
+        #{taxId,jdbcType=VARCHAR}, false, now(), now())
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysUserBuildingSiteDO">
         update t_sys_user_building_site
         <set>
+            gmt_modified = now(),
             <if test="uid != null">
                 uid = #{uid,jdbcType=INTEGER},
             </if>
@@ -146,12 +144,6 @@
             </if>
             <if test="busiLicencePic != null and busiLicencePic != ''">
                 busi_licence_pic = #{busiLicencePic,jdbcType=VARCHAR},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
             </if>
             <if test="deleted != null">
                 is_deleted = #{deleted,jdbcType=BIT},

@@ -24,7 +24,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(value = Throwable.class)
     @ResponseBody
     public String defaultErrorHandler(HttpServletRequest req, Throwable e) {
-        String message = "服务器睡着了.";
+        String message = "请求有误.";
         int errorCode = -1;
 
         if (e instanceof BusinessRuntimeException) {
@@ -49,7 +49,9 @@ class GlobalExceptionHandler {
             message = "无权操作";
         }
 
-        LOGGER.error("出错啦", e);
+        if (LOGGER.isErrorEnabled()) {
+            LOGGER.error("出错啦", e);
+        }
         return ResultVO.failResult(message, errorCode).toString();
     }
 }

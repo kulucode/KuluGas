@@ -1,14 +1,20 @@
 package cn.tpson.kulu.gas.dto;
 
-import java.math.BigDecimal;
-
 /**
  * Created by Zhangka in 2018/06/15
  */
 public class LocationDTO {
     private String addr;
-    private BigDecimal lon;
-    private BigDecimal lat;
+    private Double lon;
+    private Double lat;
+
+    private String gmtLocation;
+
+    public LocationDTO(Double lat, Double lon, String gmtLocation) {
+        this.lat = lat;
+        this.lon = lon;
+        this.setGmtLocation(gmtLocation);
+    }
 
     public String getAddr() {
         return addr;
@@ -18,19 +24,27 @@ public class LocationDTO {
         this.addr = addr;
     }
 
-    public BigDecimal getLon() {
+    public Double getLon() {
         return lon;
     }
 
-    public void setLon(BigDecimal lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
     }
 
-    public BigDecimal getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(BigDecimal lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
+    }
+
+    public String getGmtLocation() {
+        return gmtLocation;
+    }
+
+    public void setGmtLocation(String gmtLocation) {
+        this.gmtLocation = gmtLocation;
     }
 }

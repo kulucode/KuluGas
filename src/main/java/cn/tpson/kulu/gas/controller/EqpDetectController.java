@@ -1,29 +1,27 @@
 package cn.tpson.kulu.gas.controller;
 
 import cn.tpson.kulu.gas.constant.EqpTypeEnum;
+import cn.tpson.kulu.gas.constant.UserTypeEnum;
 import cn.tpson.kulu.gas.dto.*;
+import cn.tpson.kulu.gas.query.EqpDetectLogQuery;
 import cn.tpson.kulu.gas.query.EqpDetectQuery;
-import cn.tpson.kulu.gas.service.EqpDetectService;
-import cn.tpson.kulu.gas.service.EqpService;
+import cn.tpson.kulu.gas.service.*;
 import cn.tpson.kulu.gas.util.ExcelUtils;
 import cn.tpson.kulu.gas.util.RequestContextUtils;
 import cn.tpson.kulu.gas.vo.ResultVO;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Zhangka in 2018/06/19
@@ -37,17 +35,35 @@ public class EqpDetectController extends BaseController {
     private EqpService eqpService;
     @Autowired
     private EqpDetectService eqpDetectService;
+    @Autowired
+    private EqpDetectLogService eqpDetectLogService;
+    @Autowired
+    private SysUserService sysUserService;
+    @Autowired
+    private EqpOnlineLogService eqpOnlineLogService;
 
+    /**
+     * 提交审核.
+     * @param ids
+     * @return
+     */
     @PostMapping("/submit")
-    public ResultVO submit(Integer[] ids) {
+    public ResultVO submit(@RequestBody IdsDTO ids) {
         int count = 0;
-        if (ids != null && ids.length > 0) {
-            EqpDetectDTO eqpDetectDTO = new EqpDetectDTO(null, null, null, Instant.now());
+        if (ids.getIds() != null && ids.getIds().length > 0) {
+            EqpDetectDTO eqpDetectDTO = new EqpDetectDTO();
+            eqpDetectDTO.setGmtModified(Instant.now());
             Short userType = getUser().getType();
-            Short status = (userType == SysUserDTO.TYPE_BUI) ? EqpDetectDTO.STATUS_SERVICE : userType == SysUserDTO.TYPE_SER ? EqpDetectDTO.STATUS_GOV : null;
+            Short status = null;
+            if (Objects.equals(UserTypeEnum.USER_BUI.getType(), userType)) {
+                status = EqpDetectDTO.STATUS_SERVICE;
+            } else if (Objects.equals(UserTypeEnum.USER_SER.getType(), userType)) {
+                status = EqpDetectDTO.STATUS_GOV;
+            }
+
             if (status != null) {
                 eqpDetectDTO.setStatus(status);
-                for (Integer id : ids) {
+                for (Integer id : ids.getIds()) {
                     eqpDetectDTO.setId(id);
                     count += eqpDetectService.updateById(eqpDetectDTO);
                 }
@@ -65,7 +81,7 @@ public class EqpDetectController extends BaseController {
      * @param detectNo
      * @return
      */
-    @PostMapping("/add")
+    /*@PostMapping("/add")
     public ResultVO add(@NotNull(message = "设备ID不能为空.") Integer eqpId,
                         @NotBlank(message = "检测值不能为空.") String detectValue,
                         @NotBlank(message = "检测设备号不能为空.") String detectNo, Short type) {
@@ -80,34 +96,32 @@ public class EqpDetectController extends BaseController {
 
         int id = eqpDetectService.add(eqpId, detectValue, detectNo, type);
         return ResultVO.successResult(id);
-    }
+    }*/
 
     /**
-     * 分页查询.
+     * 分页查询设备检测记录.
      *
-     * @param query
      * @return
      */
     @GetMapping("/page")
-    public ResultVO page(EqpDetectQuery query, String st, String et) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if (StringUtils.isNotBlank(st)) {
-            LocalDateTime s = LocalDateTime.parse(st, df);
-            query.setStartTime(s);
+    public ResultVO page(EqpDetectQuery query) {
+        query.setEqpTypeKey(EqpTypeEnum.typeOf(query.getKey()));
+        SysUserDTO user = getUser();
+        if (Objects.equals(UserTypeEnum.USER_PER.getType(), user.getType())
+                || Objects.equals(UserTypeEnum.USER_BUI.getType(), user.getType())) {
+            query.setUid(getUid());
         }
-        if (StringUtils.isNotBlank(et)) {
-            LocalDateTime e = LocalDateTime.parse(et, df);
-            query.setEndTime(e);
-        }
-        query.setUid(getUid());
         query.setDeleted(Boolean.FALSE);
-        if (query.getType() == null) {
-            query.setType(EqpDetectDTO.TYPE_USUAL);
-        }
 
         TableDTO<EqpDetectDTO> tableDTO = eqpDetectService.pageByExample(query);
         List<EqpDetectDTO> rows = tableDTO.getRows();
-        rows.forEach(row -> eqpDetectService.initEqp(row));
+        rows.forEach(row -> {
+            eqpDetectService.initEqp(row);
+            eqpDetectService.initUser(row);
+            eqpService.initUser(row.getEqp());
+            sysUserService.initPersonal(row.getEqp().getUser());
+            sysUserService.initBuildingSite(row.getEqp().getUser());
+        });
 
         Page<EqpDetectDTO> page = new Page<>(query.getOffset(), query.getLimit());
         page.setTotalRow(tableDTO.getTotal());
@@ -116,12 +130,40 @@ public class EqpDetectController extends BaseController {
     }
 
     /**
+     * 设备历史检测记录.
+     * @param query
+     * @return
+     */
+    @GetMapping("/log/page")
+    public ResultVO page(EqpDetectLogQuery query) {
+        SysUserDTO user = getUser();
+        if (Objects.equals(UserTypeEnum.USER_PER.getType(), user.getType())
+                || Objects.equals(UserTypeEnum.USER_BUI.getType(), user.getType())) {
+            query.setUid(getUid());
+        }
+        query.setDeleted(Boolean.FALSE);
+        TableDTO<EqpDetectLogDTO> tableDTO = eqpDetectLogService.pageByExample(query);
+        List<EqpDetectLogDTO> rows = tableDTO.getRows();
+        rows.forEach(row -> {
+            eqpDetectLogService.initEqp(row);
+            eqpDetectLogService.initUser(row);
+            eqpService.initUser(row.getEqp());
+            sysUserService.initPersonal(row.getEqp().getUser());
+            sysUserService.initBuildingSite(row.getEqp().getUser());
+        });
+
+        Page<EqpDetectLogDTO> page = new Page<>(query.getOffset(), query.getLimit());
+        page.setTotalRow(tableDTO.getTotal());
+        page.setList(rows);
+        return ResultVO.successResult(page);
+    }
+    /**
      * 检测记录搜索.
      *
      * @param key
      * @return
      */
-    @GetMapping("/search")
+    /*@GetMapping("/search")
     public ResultVO search(String key, Integer offset, Integer limit) {
         if (StringUtils.isBlank(key)) {
             return ResultVO.failResult("关键字不能为空.");
@@ -140,7 +182,7 @@ public class EqpDetectController extends BaseController {
         page.setTotalRow(tableDTO.getTotal());
         page.setList(rows);
         return ResultVO.successResult(tableDTO);
-    }
+    }*/
 
     /**
      * 导出检测报表.
@@ -150,16 +192,19 @@ public class EqpDetectController extends BaseController {
      * @param et
      */
     @GetMapping("/forms")
-    public void forms(Short type, String st, String et) {
-        EqpDetectQuery query = new EqpDetectQuery();
-        query.setType(type);
-        ResultVO resultVO = this.page(query, st, et);
-        List<EqpDetectDTO> rows = ((TableDTO<EqpDetectDTO>) resultVO.getData()).getRows();
+    public void forms(EqpDetectQuery query) {
+        SysUserDTO user = getUser();
+        if (Objects.equals(UserTypeEnum.USER_PER.getType(), user.getType())
+                || Objects.equals(UserTypeEnum.USER_BUI.getType(), user.getType())) {
+            query.setUid(getUid());
+        }
+        query.setType(query.getType() == null ? EqpDetectDTO.TYPE_USUAL : query.getType());
+        query.setDeleted(Boolean.FALSE);
+        TableDTO<EqpDetectDTO> tableDTO = eqpDetectService.pageByExample(query);
+        List<EqpDetectDTO> rows = tableDTO.getRows();
 
         // 导出.
         HttpServletResponse resp = RequestContextUtils.getResponse();
-        String filename = "检测报表.xlsx";
-        String[] titles = {"序号", "设备ID", "设备类型", "机主", "机龄", "铭牌编号", "检测结果", "检测设备编号"};
         List<String[]> data = new ArrayList<>(50);
         for (int i = 0; i < rows.size(); ++i) {
             EqpDetectDTO dto = rows.get(i);
@@ -173,8 +218,22 @@ public class EqpDetectController extends BaseController {
                     dto.getDetectValue().toString(),
                     dto.getDetectNo()
             };
+
+            if (Objects.equals(EqpDetectDTO.TYPE_FIRST, query.getType())) {
+                Integer hours = eqpOnlineLogService.getWorkingHoursByEqpIdAndGmtCreate(dto.getEqpId(), dto.getGmtDetect());
+                row[5] = hours == null ? "" : String.valueOf(hours);
+            }
             data.add(row);
         }
-        ExcelUtils.httpExport(data, titles, filename, resp);
+
+        if (Objects.equals(EqpDetectDTO.TYPE_FIRST, query.getType())) {
+            String filename = "进场检测报表.xlsx";
+            String[] titles = {"序号", "设备ID", "设备类型", "机主", "机龄", "铭牌编号", "检测结果", "检测设备编号"};
+            ExcelUtils.httpExport(data, titles, filename, resp);
+        } else {
+            String filename = "日常检测报表.xlsx";
+            String[] titles = {"序号", "设备ID", "设备类型", "机主", "机龄", "距离上次检测工时", "检测结果", "检测设备编号"};
+            ExcelUtils.httpExport(data, titles, filename, resp);
+        }
     }
 }

@@ -12,6 +12,14 @@ public class BaseDO implements Serializable {
     private Instant gmtCreate;
     private Instant gmtModified;
 
+    public BaseDO() {}
+
+    public BaseDO(Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        this.deleted = deleted;
+        this.gmtCreate = gmtCreate;
+        this.gmtModified = gmtModified;
+    }
+
     public Integer getId() {
         return id;
     }

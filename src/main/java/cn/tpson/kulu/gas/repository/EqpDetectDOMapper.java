@@ -19,6 +19,20 @@ public interface EqpDetectDOMapper extends BaseMapper<EqpDetectQuery, EqpDetectD
     List<EqpDetectDO> selectByEqpId(Integer eqpId);
 
     /**
+     * 根据设备id查询单条检测记录.
+     * @param eqpId
+     * @return
+     */
+    EqpDetectDO selectOneByEqpId(Integer eqpId);
+
+    /**
+     * 根据设备id查询最新检测结果.
+     * @param eqpId
+     * @return
+     */
+    Double selectDetectValueByEqpId(Integer eqpId);
+
+    /**
      * 模糊搜索.
      * @param query.key
      * @return

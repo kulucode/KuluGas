@@ -1,7 +1,10 @@
 package cn.tpson.kulu.gas.service.impl;
 
+import cn.tpson.kulu.gas.constant.EqpStatusEnum;
 import cn.tpson.kulu.gas.domain.EqpApplyDO;
 import cn.tpson.kulu.gas.dto.EqpApplyDTO;
+import cn.tpson.kulu.gas.dto.EqpDTO;
+import cn.tpson.kulu.gas.dto.SysBlockChainDTO;
 import cn.tpson.kulu.gas.query.EqpApplyQuery;
 import cn.tpson.kulu.gas.repository.BaseMapper;
 import cn.tpson.kulu.gas.repository.EqpApplyDOMapper;
@@ -13,8 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Zhangka in 2018/06/15
@@ -34,27 +39,33 @@ public class EqpApplyServiceImpl extends BaseServiceImpl<EqpApplyDTO, EqpApplyDO
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int insert(EqpApplyDTO record) {
-        int id = super.insert(record);
-        if (record.getEqps() != null) {
-            if (record.getType() == EqpApplyDTO.TYPE_INSTALL) {
-                record.getEqps().forEach(eqpDTO -> {
-                    eqpDTO.setUid(record.getUid());
-                    eqpDTO.setGmtCreate(record.getGmtCreate());
+    public int apply(EqpApplyDTO eqpApplyDTO, Short status) {
+        int id = super.insert(eqpApplyDTO);
+
+        if (Objects.equals(EqpStatusEnum.STATUS_INSTALL_WAITING.getType(), status) || Objects.equals(EqpStatusEnum.STATUS_UNINSTALL_WAITING.getType(), status)) {
+            final Map<String, Integer> params = new HashMap<>(2);
+            eqpApplyDTO.getEqps().forEach(eqpDTO -> {
+                if (Objects.equals(EqpStatusEnum.STATUS_INSTALL_WAITING.getType(), status)) {
+                    eqpDTO.setUid(eqpApplyDTO.getUid());
+                    eqpDTO.setGmtCreate(eqpApplyDTO.getGmtCreate());
                     eqpDTO.setDeleted(Boolean.FALSE);
-                    eqpService.insert(eqpDTO);
-                });
-            } else if (record.getType() == EqpApplyDTO.TYPE_UNINSTALL) {
-                record.getEqps().forEach(eqpDTO -> {
-                    if (eqpDTO.getId() != null) {
-                        Map<String, Integer> params = new HashMap<>(2);
-                        params.put("applyId", id);
-                        params.put("eqpId", eqpDTO.getId());
-                        eqpApplyDOMapper.insertApplyEqp(params);
-                    }
-                });
-            }
+                    eqpDTO.setStatus(status);
+                    int eqpId = eqpService.insert(eqpDTO);
+
+                    // 生成区块链
+                    eqpService.createBlockChain(eqpDTO, SysBlockChainDTO.SOURCE_EQP, getUser().getUsername(), eqpDTO.getGmtCreate(), eqpId);
+                } else {
+                    eqpDTO.setStatus(status);
+                    eqpService.updateById(eqpDTO);
+                }
+
+                params.put("applyId", id);
+                params.put("eqpId", eqpDTO.getId());
+                eqpApplyDOMapper.insertApplyEqp(params);
+            });
+
         }
+
 
         return id;
     }

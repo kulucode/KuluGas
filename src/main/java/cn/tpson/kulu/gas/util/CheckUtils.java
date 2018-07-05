@@ -2,8 +2,10 @@ package cn.tpson.kulu.gas.util;
 
 import cn.tpson.kulu.gas.constant.ErrorCodeEnum;
 import cn.tpson.kulu.gas.exception.BusinessRuntimeException;
+import cn.tpson.kulu.gas.exception.PermRuntimeException;
 import cn.tpson.kulu.gas.vo.ResultVO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +23,6 @@ public class CheckUtils {
 		if (object == null) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -29,7 +30,6 @@ public class CheckUtils {
 		if (object != null) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -37,7 +37,6 @@ public class CheckUtils {
 		if (StringUtils.isBlank(source)) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -45,7 +44,6 @@ public class CheckUtils {
 		if (!Objects.equals(src, dest)) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -53,7 +51,6 @@ public class CheckUtils {
 		if (Objects.equals(src, dest)) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -61,7 +58,6 @@ public class CheckUtils {
 		if (id == null || id <= 0) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -69,7 +65,6 @@ public class CheckUtils {
 		if (list == null || list.isEmpty()) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -77,7 +72,6 @@ public class CheckUtils {
 		if (bool == null || !bool) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 	
@@ -85,15 +79,20 @@ public class CheckUtils {
 		if (bool != null && bool) {
 			throw new BusinessRuntimeException(ResultVO.failResult(errorCode).toString());
 		}
-		
 		return true;
 	}
 
 	public static boolean checkPermission(Short userType, Short type) {
         if (!Objects.equals(userType, type)) {
-            throw new BusinessRuntimeException(ResultVO.failResult(ErrorCodeEnum.PERM_ERROR).toString());
+            throw new PermRuntimeException(ResultVO.failResult(ErrorCodeEnum.PERM_ERROR).toString());
         }
-
         return true;
     }
+
+    public static boolean checkNumber(String number, ErrorCodeEnum errorCode) {
+        if (!NumberUtils.isParsable(number)) {
+            throw new BusinessRuntimeException(ResultVO.failResult(ErrorCodeEnum.PARAM_ERROR).toString());
+        }
+        return true;
+	}
 }

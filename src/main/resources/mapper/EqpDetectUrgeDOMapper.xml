@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.EqpDetectUrgeDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpDetectUrgeDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="eqp_id" jdbcType="INTEGER" property="eqpId"/>
+        <result column="eqp_no" jdbcType="VARCHAR" property="eqpNo"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="timeout_hours" jdbcType="INTEGER" property="timeoutHours"/>
+        <result column="not_detected_year" jdbcType="SMALLINT" property="notDetectedYear"/>
+        <result column="bs_id" jdbcType="INTEGER" property="bsId"/>
+        <result column="bs_name" jdbcType="VARCHAR" property="bsName"/>
+        <result column="bs_username" jdbcType="VARCHAR" property="bsUsername"/>
+        <result column="gmt_detect" jdbcType="TIMESTAMP" property="gmtDetect"/>
+        <result column="gmt_checkin" jdbcType="TIMESTAMP" property="gmtCheckin"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="status" jdbcType="SMALLINT" property="status"/>
+    </resultMap>
+
+    <sql id="fromSql">
+        t.id, t.eqp_id, t.eqp_no, t.reason, t.timeout_hours, t.not_detected_year, t.bs_id, t.bs_name,
+        t.bs_username, t.gmt_detect, t.gmt_checkin, t.is_deleted, t.gmt_create, t.gmt_modified, t.status
+        from t_eqp_detect_urge t
+    </sql>
+    <sql id="fromTable">
+        from t_eqp_detect_urge t
+    </sql>
+    <sql id="whereSql">
+        <where>
+            <if test="eqpId != null">
+                AND t.eqp_id = #{eqpId,jdbcType=INTEGER}
+            </if>
+            <if test="eqpNo != null and eqpNo != ''">
+                AND t.eqp_no = #{eqpNo,jdbcType=VARCHAR}
+            </if>
+            <if test="reason != null and reason != ''">
+                AND t.reason = #{reason,jdbcType=VARCHAR}
+            </if>
+            <if test="timeoutHours != null">
+                AND t.timeout_hours = #{timeoutHours,jdbcType=INTEGER}
+            </if>
+            <if test="notDetectedYear != null">
+                AND t.not_detected_year = #{notDetectedYear,jdbcType=SMALLINT}
+            </if>
+            <if test="bsId != null">
+                AND t.bs_id = #{bsId,jdbcType=INTEGER}
+            </if>
+            <if test="bsName != null and bsName != ''">
+                AND t.bs_name = #{bsName,jdbcType=VARCHAR}
+            </if>
+            <if test="bsUsername != null and bsUsername != ''">
+                AND t.bs_username = #{bsUsername,jdbcType=VARCHAR}
+            </if>
+            <if test="gmtDetect != null">
+                AND t.gmt_detect = #{gmtDetect,jdbcType=TIMESTAMP}
+            </if>
+            <if test="gmtCheckin != null">
+                AND t.gmt_checkin = #{gmtCheckin,jdbcType=TIMESTAMP}
+            </if>
+            <if test="deleted != null">
+                AND t.is_deleted = #{deleted,jdbcType=BIT}
+            </if>
+            <if test="gmtCreate != null">
+                AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="gmtModified != null">
+                AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+            </if>
+            <if test="status != null">
+                AND t.status = #{status,jdbcType=SMALLINT}
+            </if>
+            <if test="st != null">
+                AND t.gmt_create &gt;= #{st,jdbcType=TIMESTAMP}
+            </if>
+            <if test="et != null">
+                AND t.gmt_create &lt;= #{et,jdbcType=TIMESTAMP}
+            </if>
+            <if test="key != null and key != ''">
+                AND
+                (
+                t.eqp_no LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR t.bs_name LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR eqp.detect_no LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR eqp.owner_name LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                OR eqp.data_plate LIKE '%'||#{key, jdbcType=VARCHAR}||'%'
+                <if test="eqpType != null">
+                    OR eqp.type = #{eqpType, jdbcType=SMALLINT}
+                </if>
+                )
+            </if>
+            AND t.is_deleted = false
+        </where>
+    </sql>
+    <sql id="pageSql">
+        <if test="offset != null">
+            OFFSET #{offset,jdbcType=INTEGER}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit,jdbcType=INTEGER}
+        </if>
+    </sql>
+    <sql id="orderSql">
+        ORDER BY t.gmt_modified DESC, t.id DESC
+    </sql>
+    <!--******************************************************************************************************-->
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_eqp_detect_urge set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpDetectUrgeDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_eqp_detect_urge_id_seq'::regclass)
+        </selectKey>
+        insert into t_eqp_detect_urge (id, eqp_id, eqp_no,
+        reason, timeout_hours, not_detected_year,
+        bs_id, bs_name, bs_username,
+        gmt_detect, gmt_checkin, status, is_deleted,
+        gmt_create, gmt_modified)
+        values (#{id,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{eqpNo,jdbcType=VARCHAR},
+        #{reason,jdbcType=VARCHAR}, #{timeoutHours,jdbcType=INTEGER}, #{notDetectedYear,jdbcType=SMALLINT},
+        #{bsId,jdbcType=INTEGER}, #{bsName,jdbcType=VARCHAR}, #{bsUsername,jdbcType=VARCHAR},
+        #{gmtDetect,jdbcType=TIMESTAMP}, #{gmtCheckin,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT}, false, now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpDetectUrgeDO">
+        update t_eqp_detect_urge
+        <set>
+            gmt_modified = now(),
+            <if test="eqpId != null">
+                eqp_id = #{eqpId,jdbcType=INTEGER},
+            </if>
+            <if test="eqpNo != null and eqpNo != ''">
+                eqp_no = #{eqpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="reason != null and reason != ''">
+                reason = #{reason,jdbcType=VARCHAR},
+            </if>
+            <if test="timeoutHours != null">
+                timeout_hours = #{timeoutHours,jdbcType=INTEGER},
+            </if>
+            <if test="notDetectedYear != null">
+                not_detected_year = #{notDetectedYear,jdbcType=SMALLINT},
+            </if>
+            <if test="bsId != null">
+                bs_id = #{bsId,jdbcType=INTEGER},
+            </if>
+            <if test="bsName != null and bsName != ''">
+                bs_name = #{bsName,jdbcType=VARCHAR},
+            </if>
+            <if test="bsUsername != null and bsUsername != ''">
+                bs_username = #{bsUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtDetect != null">
+                gmt_detect = #{gmtDetect,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtCheckin != null">
+                gmt_checkin = #{gmtCheckin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <update id="updateByPrimaryKeys" parameterType="cn.tpson.kulu.gas.query.EqpDetectUrgeQuery">
+        update t_eqp_detect_urge
+        <set>
+            gmt_modified = now(),
+            <if test="eqpId != null">
+                eqp_id = #{eqpId,jdbcType=INTEGER},
+            </if>
+            <if test="eqpNo != null and eqpNo != ''">
+                eqp_no = #{eqpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="reason != null and reason != ''">
+                reason = #{reason,jdbcType=VARCHAR},
+            </if>
+            <if test="timeoutHours != null">
+                timeout_hours = #{timeoutHours,jdbcType=INTEGER},
+            </if>
+            <if test="notDetectedYear != null">
+                not_detected_year = #{notDetectedYear,jdbcType=SMALLINT},
+            </if>
+            <if test="bsId != null">
+                bs_id = #{bsId,jdbcType=INTEGER},
+            </if>
+            <if test="bsName != null and bsName != ''">
+                bs_name = #{bsName,jdbcType=VARCHAR},
+            </if>
+            <if test="bsUsername != null and bsUsername != ''">
+                bs_username = #{bsUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtDetect != null">
+                gmt_detect = #{gmtDetect,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtCheckin != null">
+                gmt_checkin = #{gmtCheckin,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT}
+            </if>
+        </set>
+        where id in
+        <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND is_deleted = false
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where t.id = #{id,jdbcType=INTEGER} AND t.is_deleted = false
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where t.is_deleted = false
+    </select>
+
+    <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectUrgeQuery" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        <if test="key != null and key != ''">
+            LEFT JOIN t_eqp eqp on eqp.id = t.eqp_id AND eqp.is_deleted = false
+        </if>
+        <include refid="whereSql"/>
+        <include refid="orderSql"/>
+        <include refid="pageSql"/>
+    </select>
+
+    <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectUrgeQuery" resultType="Integer">
+        select count(t.*)
+        <include refid="fromTable"/>
+        <include refid="whereSql"/>
+    </select>
+
+    <select id="selectByYearAndEqpId" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql" />
+        where eqp_id = #{eqpId} AND to_char(gmt_checkin, 'yyyy')::int4 = #{year} AND is_deleted = false
+    </select>
+</mapper>

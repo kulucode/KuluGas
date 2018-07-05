@@ -15,6 +15,14 @@ public class BaseQuery implements Serializable {
     private Instant gmtCreate;
     private Instant gmtModified;
 
+    public BaseQuery() {}
+    public BaseQuery(Integer id, Boolean deleted, Instant gmtCreate, Instant gmtModified) {
+        this.id = id;
+        this.deleted = deleted;
+        this.gmtCreate = gmtCreate;
+        this.gmtModified = gmtModified;
+    }
+
     public Integer getOffset() {
         return offset;
     }

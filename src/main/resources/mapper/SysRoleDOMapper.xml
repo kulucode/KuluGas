@@ -10,7 +10,7 @@
     </resultMap>
 
     <sql id="fromSql">
-    t.id, t.role_name, t.gmt_create, t.gmt_modified, t.is_deleted
+    t.id, t.role_name, t.is_deleted, t.gmt_create, t.gmt_modified
     from t_sys_role t
   </sql>
     <sql id="fromTable">
@@ -30,9 +30,7 @@
             <if test="gmtModified != null">
                 AND t.gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
             </if>
-            <if test="deleted != null">
-                AND t.is_deleted = #{deleted,jdbcType=BIT}
-            </if>
+            AND t.is_deleted = false
         </where>
     </sql>
     <sql id="pageSql">
@@ -47,31 +45,25 @@
         ORDER BY t.gmt_modified DESC, t.id DESC
     </sql>
     <!--***********************************************************************************************-->
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_sys_role set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_sys_role set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-    </delete>
+    </update>
 
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysRoleDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_sys_role_id_seq'::regclass)
         </selectKey>
-        insert into t_sys_role (id, role_name, gmt_create, gmt_modified, is_deleted)
-        values (#{id,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP},
-        #{gmtModified,jdbcType=TIMESTAMP}, #{deleted, jdbcType=BIT})
+        insert into t_sys_role (id, role_name, is_deleted, gmt_create, gmt_modified)
+        values (#{id,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, false, now(), now())
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysRoleDO">
         update t_sys_role
         <set>
+            gmt_modified = now(),
             <if test="roleName != null and roleName != ''">
                 role_name = #{roleName,jdbcType=VARCHAR},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
             </if>
             <if test="deleted != null">
                 is_deleted = #{deleted, jdbcType=BIT}

@@ -1,5 +1,10 @@
 package cn.tpson.kulu.gas.query;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+
 public class SysUserQuery extends BaseQuery {
     private String username;
 
@@ -9,6 +14,9 @@ public class SysUserQuery extends BaseQuery {
 
     private String password;
 
+    /**
+     * 状态，0：正常；1：待审核；2：拒绝
+     */
     private Short status;
 
     /**
@@ -19,6 +27,14 @@ public class SysUserQuery extends BaseQuery {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     private Integer[] ids;
+
+    // 搜索关键字
+    private String key;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date st;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date et;
 
     public String getUsername() {
         return username;
@@ -74,5 +90,29 @@ public class SysUserQuery extends BaseQuery {
 
     public void setIds(Integer[] ids) {
         this.ids = ids;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Date getSt() {
+        return st;
+    }
+
+    public void setSt(Date st) {
+        this.st = st;
+    }
+
+    public Date getEt() {
+        return et;
+    }
+
+    public void setEt(Date et) {
+        this.et = et;
     }
 }

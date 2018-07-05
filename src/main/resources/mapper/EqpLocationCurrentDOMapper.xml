@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.EqpLocationCurrentDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.EqpLocationCurrentDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="lat" jdbcType="DOUBLE" property="lat"/>
+        <result column="lon" jdbcType="DOUBLE" property="lon"/>
+        <result column="eqp_id" jdbcType="INTEGER" property="eqpId"/>
+        <result column="area" jdbcType="VARCHAR" property="area"/>
+        <result column="addr" jdbcType="VARCHAR" property="addr"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+    </resultMap>
+
+    <sql id="fromSql">
+        select t.id, t.lat, t.lon, t.eqp_id, t.area, t.addr, t.is_deleted, t.gmt_create, t.gmt_modified
+        from t_eqp_location_current t
+    </sql>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_eqp_location_current set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpLocationCurrentDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_eqp_location_current_id_seq'::regclass)
+        </selectKey>
+        insert into t_eqp_location_current (id, lat, lon, eqp_id,
+        area, addr, is_deleted,
+        gmt_create, gmt_modified)
+        values (#{id,jdbcType=INTEGER}, #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{eqpId,jdbcType=INTEGER},
+        #{area,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR}, false, now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpLocationCurrentDO">
+    update t_eqp_location_current
+    <set>
+        gmt_modified = now(),
+        <if test="lat != null">
+            lat = #{lat,jdbcType=DOUBLE},
+        </if>
+        <if test="lon != null">
+            lon = #{lon,jdbcType=DOUBLE},
+        </if>
+        <if test="eqpId != null">
+            eqp_id = #{eqpId,jdbcType=INTEGER},
+        </if>
+        <if test="area != null and area != ''">
+            area = #{area,jdbcType=VARCHAR},
+        </if>
+        <if test="addr != null and addr != ''">
+            addr = #{addr,jdbcType=VARCHAR},
+        </if>
+        <if test="deleted != null">
+            is_deleted = #{deleted,jdbcType=BIT}
+        </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <include refid="fromSql"/>
+        where t.id = #{id,jdbcType=INTEGER} AND t.is_deleted = false
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        <include refid="fromSql"/>
+        where t.is_deleted = false
+    </select>
+
+    <select id="selectByEqpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <include refid="fromSql"/>
+        where t.eqp_id = #{eqpId, jdbcType=INTEGER} AND t.is_deleted = false
+    </select>
+
+    <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <include refid="fromSql"/>
+        INNER JOIN t_eqp eqp ON eqp.id = t.eqp_id AND eqp.is_deleted = false
+        <where>
+            <if test="uid != null">
+                AND eqp.uid = #{uid,jdbcType=INTEGER}
+            </if>
+            AND t.is_deleted = false
+        </where>
+    </select>
+</mapper>

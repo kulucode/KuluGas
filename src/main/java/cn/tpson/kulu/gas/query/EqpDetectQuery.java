@@ -1,8 +1,11 @@
 package cn.tpson.kulu.gas.query;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class EqpDetectQuery extends BaseQuery {
     /**
@@ -49,13 +52,32 @@ public class EqpDetectQuery extends BaseQuery {
      */
     private Instant gmtLastDetect;
 
-    /////////////////////////////////////////////////////////////////////////////
+    /**
+     * 检测人.
+     */
     private Integer uid;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String key;     // 搜索关键字
-    private Short eqpType;  // 设备类型
-    private Short source;   // 搜索表格来源
+
+    private Double lat;
+    private Double lon;
+
+    /////////////////////////////////////////////////////////////////////////////
+    /**
+     * 开始时间(用户时间查询).
+     */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date st;
+
+    /**
+     * 截止时间(用户时间查询).
+     */
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date et;
+    private String key;         // 搜索关键字
+    private Short eqpType;      // 设备类型
+    private Short eqpTypeKey;   // 设备类型
+    private Short source;       // 搜索表格来源
+    private String area;        // 所在区域
+    private String disLevel;    // 排放等级
 
     public Integer getEqpId() {
         return eqpId;
@@ -105,20 +127,20 @@ public class EqpDetectQuery extends BaseQuery {
         this.uid = uid;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public Date getSt() {
+        return st;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public void setSt(Date st) {
+        this.st = st;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public Date getEt() {
+        return et;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setEt(Date et) {
+        this.et = et;
     }
 
     public String getKey() {
@@ -175,5 +197,45 @@ public class EqpDetectQuery extends BaseQuery {
 
     public void setGmtLastDetect(Instant gmtLastDetect) {
         this.gmtLastDetect = gmtLastDetect;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getDisLevel() {
+        return disLevel;
+    }
+
+    public void setDisLevel(String disLevel) {
+        this.disLevel = disLevel;
+    }
+
+    public Short getEqpTypeKey() {
+        return eqpTypeKey;
+    }
+
+    public void setEqpTypeKey(Short eqpTypeKey) {
+        this.eqpTypeKey = eqpTypeKey;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }

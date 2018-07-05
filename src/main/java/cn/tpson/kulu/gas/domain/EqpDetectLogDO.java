@@ -31,6 +31,14 @@ public class EqpDetectLogDO extends BaseDO {
      */
     private Short type;
 
+    /**
+     * 检测人.
+     */
+    private Integer uid;
+
+    private Double lat;
+    private Double lon;
+
     public Integer getEqpId() {
         return eqpId;
     }
@@ -69,5 +77,29 @@ public class EqpDetectLogDO extends BaseDO {
 
     public void setType(Short type) {
         this.type = type;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }

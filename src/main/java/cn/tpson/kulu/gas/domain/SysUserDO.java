@@ -9,6 +9,9 @@ public class SysUserDO extends BaseDO {
 
     private String password;
 
+    /**
+     * 状态，0：正常；1：待审核；2：拒绝
+     */
     private Short status;
 
     /**

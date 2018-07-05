@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.SysBlockChainContentDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.SysBlockChainContentDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="content" jdbcType="OTHER" property="content"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_sys_block_chain_content set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysBlockChainContentDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_sys_block_chain_content_id_seq'::regclass)
+        </selectKey>
+        insert into t_sys_block_chain_content (id, content, is_deleted, gmt_create, gmt_modified)
+        values (#{id,jdbcType=INTEGER}, #{content,jdbcType=OTHER}::json, false, now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysBlockChainContentDO">
+        update t_sys_block_chain_content
+        <set>
+            gmt_modified = now(),
+            <if test="content != null and content != ''">
+                content = #{content,jdbcType=OTHER}::json,
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, content, gmt_create, gmt_modified, is_deleted
+    from t_sys_block_chain_content
+    where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+    select id, content, gmt_create, gmt_modified, is_deleted
+    from t_sys_block_chain_content
+    where is_deleted = false
+  </select>
+</mapper>

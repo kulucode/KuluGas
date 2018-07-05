@@ -19,9 +19,13 @@ public class BaseDTO implements Serializable {
     private Integer limit;
 
     private Integer id;
+
+    @JsonIgnore
     private Boolean deleted;
+
     @JsonSerialize(using = InstantSerializer.class)
     private Instant gmtCreate;
+
     @JsonSerialize(using = InstantSerializer.class)
     private Instant gmtModified;
 

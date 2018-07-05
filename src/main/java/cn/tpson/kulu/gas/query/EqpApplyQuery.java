@@ -22,19 +22,13 @@ public class EqpApplyQuery extends BaseQuery {
     private String location;
 
     /**
-     * 状态，0：正常；1：待审核；2：拒绝
-     */
-    private Short status;
-
-    /**
-     * 类型，1：装机；2：拆机；
-     */
-    private Short type;
-
-    /**
      * 备注.
      */
     private String comment;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    private Integer[] ids;
 
     public Integer getUid() {
         return uid;
@@ -68,27 +62,19 @@ public class EqpApplyQuery extends BaseQuery {
         this.location = location;
     }
 
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public Short getType() {
-        return type;
-    }
-
-    public void setType(Short type) {
-        this.type = type;
-    }
-
     public String getComment() {
         return comment;
     }
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Integer[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Integer[] ids) {
+        this.ids = ids;
     }
 }

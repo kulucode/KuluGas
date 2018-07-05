@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.StatisticsMapper">
+    <select id="countOnlineOfYear" resultType="cn.tpson.kulu.gas.dto.StatisticsDTO">
+        SELECT COUNT(*) total, date FROM
+        (
+        SELECT distinct eqp_id, to_char(gmt_create, 'yyyy-MM') date FROM t_eqp_online_log WHERE gmt_create IS NOT NULL AND is_deleted = false AND to_char(gmt_create, 'yyyy') = to_char(now(), 'yyyy')
+        ) t
+        GROUP BY date
+    </select>
+
+    <select id="countDetectOfYear" resultType="cn.tpson.kulu.gas.dto.StatisticsDTO">
+        SELECT COUNT(*) total, date FROM
+        (
+        SELECT distinct eqp_id, to_char(gmt_detect, 'yyyy-MM') date FROM t_eqp_detect WHERE gmt_detect IS NOT NULL AND is_deleted = false AND to_char(gmt_create, 'yyyy') = to_char(now(), 'yyyy')
+        ) t
+        GROUP BY date
+    </select>
+
+    <select id="countPunishOfYear" resultType="cn.tpson.kulu.gas.dto.StatisticsDTO">
+        SELECT COUNT(*) total, date FROM
+        (
+        SELECT distinct eqp_id, to_char(gmt_create, 'yyyy-MM') date FROM t_eqp_punish WHERE gmt_create IS NOT NULL AND is_deleted = false AND  to_char(gmt_create, 'yyyy') = to_char(now(), 'yyyy')
+        ) t
+        GROUP BY date
+    </select>
+</mapper>

@@ -51,6 +51,15 @@ public class EqpDetectDO extends BaseDO {
      */
     private Instant gmtLastDetect;
 
+    /**
+     * 检测人.
+
+     */
+    private Integer uid;
+
+    private Double lat;
+    private Double lon;
+
     public Integer getEqpId() {
         return eqpId;
     }
@@ -121,5 +130,29 @@ public class EqpDetectDO extends BaseDO {
 
     public void setGmtLastDetect(Instant gmtLastDetect) {
         this.gmtLastDetect = gmtLastDetect;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLon() {
+        return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 }

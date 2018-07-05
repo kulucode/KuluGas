@@ -1,6 +1,8 @@
 package cn.tpson.kulu.gas.dto;
 
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
 import java.time.Instant;
@@ -14,17 +16,7 @@ public class SysUserDTO extends BaseDTO {
      */
     public static final short STATUS_NORMAL = 0;
     public static final short STATUS_WAITING = 1;
-    public static final short STATUS_REFUSED = 2;
-
-    /**
-     * 0:系统管理员;1:政府;2:服务公司;3:施工单位;4:个人机主;5:工程安装;
-     */
-    public static final short TYPE_SYS = 0;
-    public static final short TYPE_GOV = 1;
-    public static final short TYPE_SER = 2;
-    public static final short TYPE_BUI = 3;
-    public static final short TYPE_PER = 4;
-    public static final short TYPE_PRO = 5;
+    public static final short STATUS_REFUSE = 2;
 
     @NotBlank(message = "用户名不能为空.")
     private String username;
@@ -47,12 +39,15 @@ public class SysUserDTO extends BaseDTO {
 
     /**
      * 0:系统管理员;1:政府;2:服务公司;3:施工单位;4:个人机主;5:工程安装;
+     * @see cn.tpson.kulu.gas.constant.UserTypeEnum
      */
     private Short type;
 
     private SysUserBuildingSiteDTO buildingSite;
 
     private SysUserPersonalDTO personal;
+
+    private BaseDTO detail;
 
     private List<SysRoleDTO> sysRoles;
 
@@ -144,5 +139,13 @@ public class SysUserDTO extends BaseDTO {
 
     public static void main(String[] args) {
         System.out.println(JSON.toJSONString(new SysUserDTO()));
+    }
+
+    public BaseDTO getDetail() {
+        return detail;
+    }
+
+    public void setDetail(BaseDTO detail) {
+        this.detail = detail;
     }
 }

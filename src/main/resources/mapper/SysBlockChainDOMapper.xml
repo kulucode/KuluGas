@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tpson.kulu.gas.repository.SysBlockChainDOMapper">
+    <resultMap id="BaseResultMap" type="cn.tpson.kulu.gas.domain.SysBlockChainDO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="block_hash" jdbcType="VARCHAR" property="blockHash"/>
+        <result column="last_block_hash" jdbcType="VARCHAR" property="lastBlockHash"/>
+        <result column="content_hash" jdbcType="VARCHAR" property="contentHash"/>
+        <result column="content_creator" jdbcType="VARCHAR" property="contentCreator"/>
+        <result column="gmt_content_modified" jdbcType="TIMESTAMP" property="gmtContentModified"/>
+        <result column="content_id" jdbcType="INTEGER" property="contentId"/>
+        <result column="source" jdbcType="SMALLINT" property="source"/>
+        <result column="sid" jdbcType="INTEGER" property="sid"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    update t_sys_block_chain set is_deleted = true, gmt_modified = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.SysBlockChainDO">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval('t_sys_block_chain_id_seq'::regclass)
+        </selectKey>
+        insert into t_sys_block_chain (id, level, block_hash,
+        content_hash, last_block_hash, content_creator, gmt_content_modified,
+        content_id, source, sid, is_deleted, gmt_create, gmt_modified)
+        <!--level暂时跟随id-->
+        values (#{id,jdbcType=INTEGER}, #{id,jdbcType=INTEGER}, #{blockHash,jdbcType=VARCHAR},
+        #{contentHash,jdbcType=VARCHAR}, #{lastBlockHash,jdbcType=VARCHAR}, #{contentCreator,jdbcType=VARCHAR},
+        #{gmtContentModified,jdbcType=TIMESTAMP},
+        #{contentId,jdbcType=INTEGER}, #{source,jdbcType=SMALLINT}, #{sid,jdbcType=INTEGER}, false, now(), now())
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.SysBlockChainDO">
+        update t_sys_block_chain
+        <set>
+            gmt_modified = now(),
+            <if test="level != null">
+                level = #{level,jdbcType=INTEGER},
+            </if>
+            <if test="blockHash != null and blockHash != ''">
+                block_hash = #{blockHash,jdbcType=VARCHAR},
+            </if>
+            <if test="contentHash != null and contentHash != ''">
+                content_hash = #{contentHash,jdbcType=VARCHAR},
+            </if>
+            <if test="lastBlockHash != null and lastBlockHash != ''">
+                last_block_hash = #{lastBlockHash,jdbcType=VARCHAR},
+            </if>
+            <if test="contentCreator != null and contentCreator != ''">
+                content_creator = #{contentCreator,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtContentModified != null">
+                gmt_content_modified = #{gmtContentModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="contentId != null">
+                content_id = #{contentId,jdbcType=INTEGER},
+            </if>
+            <if test="source != null">
+                source = #{source,jdbcType=SMALLINT},
+            </if>
+            <if test="sid != null">
+                sid = #{sid,jdbcType=INTEGER},
+            </if>
+            <if test="deleted != null">
+                is_deleted = #{deleted,jdbcType=BIT}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, level, block_hash, content_hash, last_block_hash, content_creator, gmt_content_modified,
+    content_id, source, sid, gmt_create, gmt_modified, is_deleted
+    from t_sys_block_chain
+    where id = #{id,jdbcType=INTEGER} AND is_deleted = false
+  </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id, level, block_hash, content_hash, last_block_hash, content_creator, gmt_content_modified,
+        content_id, source, sid, gmt_create, gmt_modified, is_deleted
+        from t_sys_block_chain
+        where is_deleted = false
+    </select>
+
+    <select id="selectLastBlockHash" resultType="java.lang.String">
+        SELECT block_hash FROM t_sys_block_chain where is_deleted = false ORDER BY id DESC LIMIT 1;
+    </select>
+
+    <select id="selectOneByExample" parameterType="cn.tpson.kulu.gas.query.SysBlockChainQuery" resultMap="BaseResultMap">
+      select id, level, block_hash, content_hash, last_block_hash, content_creator, gmt_content_modified, content_id, source, sid, gmt_create, gmt_modified, is_deleted
+      from t_sys_block_chain
+      <where>
+          source = #{source,jdbcType=SMALLINT}
+          AND sid = #{sid,jdbcType=INTEGER}
+          AND is_deleted = false
+      </where>
+    </select>
+</mapper>

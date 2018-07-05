@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: location-service
+
+  datasource:
+    url: jdbc:postgresql://182.61.20.179:5432/gas_test
+    username: postgres
+    password: kuluv2#2018
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 5000
+      idle-timeout: 10000
+      maximum-pool-size: 10
+      auto-commit: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+#redis
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    timeout: 60000ms
+    jedis:
+      pool:
+        max-active: 100
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 8
+#debug: true
+
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+#  instance:
+#    lease-expiration-duration-in-seconds: 15
+#    lease-renewal-interval-in-seconds: 5
+#  instance:
+#    hostname: localhost
+

@@ -1,6 +1,7 @@
 package cn.tpson.kulu.gas.service;
 
 import cn.tpson.kulu.gas.domain.EqpDetectLogDO;
+import cn.tpson.kulu.gas.dto.EqpDetectDTO;
 import cn.tpson.kulu.gas.dto.EqpDetectLogDTO;
 import cn.tpson.kulu.gas.dto.TableDTO;
 import cn.tpson.kulu.gas.query.EqpDetectLogQuery;
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public interface EqpDetectLogService extends BaseService<EqpDetectLogDTO, EqpDetectLogDO, EqpDetectLogQuery> {
     List<EqpDetectLogDTO> getByEqpId(Integer eqpId);
+
+    EqpDetectLogDTO getOneByEqpId(Integer eqpId);
 
     /**
      * 模糊搜索.
@@ -27,5 +30,7 @@ public interface EqpDetectLogService extends BaseService<EqpDetectLogDTO, EqpDet
      */
     Integer countBySearch(EqpDetectLogQuery query);
 
-    void initEqp(EqpDetectLogDTO eqpDetectDTO);
+    void initEqp(EqpDetectLogDTO eqpDetectLogDTO);
+
+    void initUser(EqpDetectLogDTO eqpDetectLogDTO);
 }

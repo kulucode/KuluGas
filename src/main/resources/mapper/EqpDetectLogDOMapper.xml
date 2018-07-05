@@ -7,14 +7,17 @@
         <result column="detect_value" jdbcType="NUMERIC" property="detectValue"/>
         <result column="detect_no" jdbcType="VARCHAR" property="detectNo"/>
         <result column="status" jdbcType="SMALLINT" property="status"/>
+        <result column="type" jdbcType="SMALLINT" property="type"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
         <result column="is_deleted" jdbcType="BIT" property="deleted"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
         <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
-        <result column="type" jdbcType="SMALLINT" property="type"/>
+        <result column="lat" jdbcType="DOUBLE" property="lat"/>
+        <result column="lon" jdbcType="DOUBLE" property="lon"/>
     </resultMap>
 
     <sql id="fromSql">
-        t.id, t.eqp_id, t.detect_value, t.detect_no, t.status, t.type, t.is_deleted, t.gmt_create, t.gmt_modified
+        t.id, t.eqp_id, t.detect_value, t.detect_no, t.status, t.type, t.uid, t.is_deleted, t.gmt_create, t.gmt_modified, t.lat, t.lon
         from t_eqp_detect_log t
     </sql>
     <sql id="fromTable">
@@ -37,6 +40,15 @@
             <if test="type != null">
                 AND t.type = #{type,jdbcType=SMALLINT}
             </if>
+            <if test="uid != null">
+                AND t.uid = #{uid,jdbcType=INTEGER}
+            </if>
+            <if test="lat != null">
+                AND t.lat = #{lat,jdbcType=DOUBLE}
+            </if>
+            <if test="lon != null">
+                AND t.lon = #{lon,jdbcType=DOUBLE}
+            </if>
             <if test="gmtCreate != null">
                 AND t.gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
             </if>
@@ -49,9 +61,7 @@
             <if test="startTime != null">
                 AND t.gmt_create &gt;= #{startTime,jdbcType=TIMESTAMP}
             </if>
-            <if test="endTime != null">
-                AND t.gmt_create &lt;= #{endTime,jdbcType=TIMESTAMP}
-            </if>
+            AND t.is_deleted = false
         </where>
     </sql>
     <sql id="pageSql">
@@ -66,27 +76,28 @@
         ORDER BY t.gmt_modified DESC, t.id DESC
     </sql>
     <!--***************************************************************************************-->
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        update t_eqp_detect_log set is_deleted = true
+    <update id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        update t_eqp_detect_log set is_deleted = true, gmt_modified = now()
         where id = #{id,jdbcType=INTEGER}
-    </delete>
+    </update>
 
     <insert id="insert" parameterType="cn.tpson.kulu.gas.domain.EqpDetectLogDO">
         <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
             SELECT nextval('t_eqp_detect_log_id_seq'::regclass)
         </selectKey>
         insert into t_eqp_detect_log (id, eqp_id, detect_value,
-        detect_no, status, type, is_deleted, gmt_create, gmt_modified
+        detect_no, status, type, uid, is_deleted, gmt_create, gmt_modified, lat, lon
         )
         values (#{id,jdbcType=INTEGER}, #{eqpId,jdbcType=INTEGER}, #{detectValue,jdbcType=NUMERIC},
-        #{detectNo,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT}, #{deleted,jdbcType=BIT},
-        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+        #{detectNo,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT}, #{uid,jdbcType=INTEGER},
+        false, now(), now(), #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}
         )
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="cn.tpson.kulu.gas.domain.EqpDetectLogDO">
         update t_eqp_detect_log
         <set>
+            gmt_modified = now(),
             <if test="eqpId != null">
                 eqp_id = #{eqpId,jdbcType=INTEGER},
             </if>
@@ -99,17 +110,20 @@
             <if test="status != null">
                 status = #{status,jdbcType=SMALLINT},
             </if>
+            <if test="type != null">
+                type = #{type,jdbcType=SMALLINT},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="lat != null">
+                lat = #{lat,jdbcType=DOUBLE},
+            </if>
+            <if test="lon != null">
+                lon = #{lon,jdbcType=DOUBLE},
+            </if>
             <if test="deleted != null">
                 is_deleted = #{deleted,jdbcType=BIT},
-            </if>
-            <if test="gmtCreate != null">
-                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="gmtModified != null">
-                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-            </if>
-            <if test="type != null">
-                type = #{type,jdbcType=SMALLINT}
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER} AND is_deleted = false
@@ -134,12 +148,16 @@
         where t.eqp_id = #{eqpId,jdbcType=VARCHAR} AND t.is_deleted = false
     </select>
 
+    <select id="selectOneByEqpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="fromSql"/>
+        where t.eqp_id = #{eqpId,jdbcType=VARCHAR} AND t.is_deleted = false AND t.gmt_modified IS NOT NULL
+        ORDER BY t.gmt_modified DESC, t.id DESC LIMIT 1
+    </select>
+
     <select id="selectByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectLogQuery" resultMap="BaseResultMap">
         select
         <include refid="fromSql"/>
-        <if test="uid != null">
-            INNER JOIN t_eqp te ON te.id = t.eqp_id AND te.uid = #{uid, jdbcType=INTEGER} AND te.is_deleted = false
-        </if>
         <include refid="whereSql"/>
         <include refid="orderSql"/>
         <include refid="pageSql"/>
@@ -154,9 +172,6 @@
     <select id="countByExample" parameterType="cn.tpson.kulu.gas.query.EqpDetectLogQuery" resultType="Integer">
         select count(t.*)
         <include refid="fromTable"/>
-        <if test="uid != null">
-            INNER JOIN t_eqp te ON te.id = t.eqp_id AND te.uid = #{uid, jdbcType=INTEGER} AND te.is_deleted = false
-        </if>
         <include refid="whereSql"/>
     </select>
 

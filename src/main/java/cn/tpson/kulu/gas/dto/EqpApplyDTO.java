@@ -4,12 +4,6 @@ import java.time.Instant;
 import java.util.List;
 
 public class EqpApplyDTO extends BaseDTO {
-    public static final short TYPE_INSTALL = 1;
-    public static final short TYPE_UNINSTALL = 2;
-
-    public static final short STATUS_NORMAL = 0;
-    public static final short STATUS_WAITING = 1;
-    public static final short STATUS_REFUSE = 2;
     /**
      * 申请人id.--> t_sys_user.
      */
@@ -29,16 +23,6 @@ public class EqpApplyDTO extends BaseDTO {
      * 定位地址.
      */
     private String location;
-
-    /**
-     * 状态，0：正常；1：待审核；2：拒绝
-     */
-    private Short status;
-
-    /**
-     * 类型，1：装机；2：拆机；
-     */
-    private Short type;
 
     /**
      * 备注.
@@ -85,22 +69,6 @@ public class EqpApplyDTO extends BaseDTO {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public Short getType() {
-        return type;
-    }
-
-    public void setType(Short type) {
-        this.type = type;
     }
 
     public String getComment() {
